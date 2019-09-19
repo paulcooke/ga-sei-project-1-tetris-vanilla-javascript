@@ -3,6 +3,45 @@
 }
 
 body {
-  background: red;
-  color: white;
+  /* align-items: center; */
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  margin: 0;
 }
+
+.grid {
+  
+  margin-top: 30px;
+  align-items: center;
+  /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2); */
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  /* height: 50%; */
+  justify-content: center;
+  max-height: 480px;
+  max-width: 200px;
+}
+
+.grid div {
+  border: 1px solid rgb(226, 224, 224);
+  flex-grow: 1;
+  height: 20px;
+  width: 20px;
+}
+
+.active-shape {
+  background-color: orange;
+}
+
+.shape-next-location {
+  background-color: green
+}
+
+/* .grid div.player {
+  background-image: url(../assets/sprite-sheet.png);
+  background-size: 300px;
+  background-position-x: 0;
+  background-position-y: 0;
+} */
