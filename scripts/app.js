@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // this function spawns a new shape at the top of the board, on location 14
   function spawnShape () {
     activeShapeLocation = currentShape.map(x => {
-      document.querySelectorAll('div')[x + startLocation + 1].classList.add('active-shape')
+      cells[x + startLocation].classList.add('active-shape')
       return x + startLocation
     })
   }
@@ -39,13 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // this function removes the class 'active-shape' from the divs currently in the active shape location
   function clearShape(shapeArrayOut) {
     shapeArrayOut.forEach(idx => {
-      document.querySelectorAll('div')[idx + 1].classList.remove('active-shape')
+      cells[idx].classList.remove('active-shape')
     })
   }
 
   function drawShape(shapeArrayIn) {
     shapeArrayIn.forEach(idx => {
-      document.querySelectorAll('div')[idx + 1].classList.add('active-shape')
+      cells[idx].classList.add('active-shape')
     })
   }
 
@@ -72,26 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
       clearShape(activeShapeLocation)
       console.log(activeShapeLocation)
 
-      const newLocation = activeShapeLocation.map(idx => {
-        const x = idx % width
-        const y = Math.floor(idx / width)
-        
+      activeShapeLocation = activeShapeLocation.map(idx => {        
         switch (e.keyCode) {
-          case 37: if (leftCheck(activeShapeLocation)) return idx -= 1       // left 
+          case 37: if (leftCheck(activeShapeLocation)) idx -= 1       // left 
             break
-          case 38: if (upCheck(activeShapeLocation)) return idx -= width     // up
+          case 38: if (upCheck(activeShapeLocation)) idx -= width     // up
             break
-          case 39: if (rightCheck(activeShapeLocation)) return idx += 1      // right
+          case 39: if (rightCheck(activeShapeLocation)) idx += 1      // right
             break
-          case 40: if (downCheck(activeShapeLocation)) return idx += width   // down
+          case 40: if (downCheck(activeShapeLocation)) idx += width   // down
             break
         }
+        return idx
       })
-      if (newLocation.every(x => x)) {
-        activeShapeLocation = newLocation
-      }
-      drawShape(activeShapeLocation)
       console.log('new shape location', activeShapeLocation)
+      drawShape(activeShapeLocation)
+      
     }
   })
 
@@ -99,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
   chooseShape()
   console.log(currentShape)
   spawnShape()
+  // document.querySelectorAll('div')[1].classList.add('green')
+  // document.querySelectorAll('div')[239].classList.add('green')
   //console.log(activeShapeLocation)
 
 })

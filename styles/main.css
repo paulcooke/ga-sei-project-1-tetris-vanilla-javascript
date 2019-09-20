@@ -39,6 +39,10 @@ body {
   background-color: green
 }
 
+.green {
+  background-color: green
+}
+
 /* .grid div.player {
   background-image: url(../assets/sprite-sheet.png);
   background-size: 300px;
