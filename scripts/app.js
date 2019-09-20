@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const shapes = []
   let currentShape = 0
   const directionKeys = [37,38,39,40]
-  let currentShapeColor = ''
+  let currentShapeColor = '' // not in use yet
 
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
@@ -30,8 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const oShape = [10, 11, 20, 21]
     shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
     const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'yellow']
-    currentShape = shapes[Math.floor(Math.random() * shapes.length)]
-    currentShapeColor = shapeColors[shapes[currentShape]]
+    console.log('shapeColor', shapeColors[3])
+    const colorMatch = Math.floor(Math.random() * shapes.length)
+    currentShape = shapes[colorMatch]
+    currentShapeColor = shapeColors[colorMatch]
+    console.log('current shape color:', currentShapeColor)
   }
   console.log(shapes)  
 
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function spawnShape () {
     activeShapeLocation = currentShape.map(x => {
       cells[x + startLocation].classList.add('active-shape')
+      cells[x + startLocation].style.backgroundColor = currentShapeColor
       return x + startLocation
     })
   }
@@ -47,29 +51,32 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearShape(shapeArrayOut) {
     shapeArrayOut.forEach(idx => {
       cells[idx].classList.remove('active-shape')
+      cells[idx].style.backgroundColor = 'white'
     })
   }
 
   function drawShape(shapeArrayIn) {
     shapeArrayIn.forEach(idx => {
       cells[idx].classList.add('active-shape')
+      cells[idx].style.backgroundColor = currentShapeColor
+      console.log('second', currentShapeColor)
     })
   }
 
   function rightCheck(array) {
-    return activeShapeLocation.every(pos => pos % width < width - 1)
+    return array.every(pos => pos % width < width - 1)
   }
 
   function leftCheck(array) {
-    return activeShapeLocation.every(pos => pos % width > 0)
+    return array.every(pos => pos % width > 0)
   }
 
   function upCheck(array) {
-    return activeShapeLocation.every(pos => Math.floor(pos / width) > 0)
+    return array.every(pos => Math.floor(pos / width) > 0)
   }
 
   function downCheck(array) {
-    return activeShapeLocation.every(pos => Math.floor(pos / width) < height - 1)
+    return array.every(pos => Math.floor(pos / width) < height - 1)
   }
 
   // this is the evenet listener that is waiting for keyup
@@ -102,8 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
   makeShape()
   console.log(currentShape)
   spawnShape()
-  // document.querySelectorAll('div')[1].classList.add('green')
-  // document.querySelectorAll('div')[239].classList.add('green')
   //console.log(activeShapeLocation)
 
 })
