@@ -29,14 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const iShape = [1, 11, 21, 31]
     const oShape = [10, 11, 20, 21]
     shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
-    const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'yellow']
-    console.log('shapeColor', shapeColors[3])
+    const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'rgb(243, 229, 79)']
     const colorMatch = Math.floor(Math.random() * shapes.length)
     currentShape = shapes[colorMatch]
     currentShapeColor = shapeColors[colorMatch]
-    console.log('current shape color:', currentShapeColor)
-  }
-  console.log(shapes)  
+  } 
 
   // this function spawns a new shape at the top of the board, on location 14
   function spawnShape () {
@@ -59,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     shapeArrayIn.forEach(idx => {
       cells[idx].classList.add('active-shape')
       cells[idx].style.backgroundColor = currentShapeColor
-      console.log('second', currentShapeColor)
     })
   }
 
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return array.every(pos => Math.floor(pos / width) < height - 1)
   }
 
-  // this is the evenet listener that is waiting for keyup
+  // this is the evenet listener that is waiting for keyup and organising movement
   document.addEventListener('keyup', e => {
     
     if (directionKeys.includes(e.keyCode)) {
@@ -101,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       console.log('new shape location', activeShapeLocation)
       drawShape(activeShapeLocation)
-      
     }
   })
 
@@ -112,3 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //console.log(activeShapeLocation)
 
 })
+
+
+// Collision detection for downward movement happens in the down section of the move checks
+// need to put newly settled blocks in the settled blocks array, which must have settled class
