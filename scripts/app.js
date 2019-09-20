@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startLocation = 14
   const shapes = []
   let currentShape = 0
+  const directionKeys = [37,38,39,40]
   
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // this is the evenet listener that is waiting for keyup
   document.addEventListener('keyup', e => {
     
-    if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40) {
+    if (directionKeys.includes(e.keyCode)) {
       clearShape(activeShapeLocation)
       console.log(activeShapeLocation)
 
@@ -74,21 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
       drawShape(activeShapeLocation)
       console.log('new shape location' ,activeShapeLocation)
     }
-
-
-    // const x = playerIdx % width
-    // const y = Math.floor(playerIdx / width)
-    // switch (e.keyCode) {
-    //   case 37: if(x > 0) playerIdx -= 1
-    //     break
-    //   case 38: if(y > 0) playerIdx -= width
-    //     break
-    //   case 39: if(x < width - 1) playerIdx += 1
-    //     break
-    //   case 40: if(y < width - 1)playerIdx += width
-    //     break
-    // }
-    
   })
 
   makeBoard()
@@ -96,10 +82,5 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log(currentShape)
   spawnShape()
   //console.log(activeShapeLocation)
-  
-
-  
-
-
 
 })
