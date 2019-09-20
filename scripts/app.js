@@ -49,6 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  function rightCheck(array) {
+    return activeShapeLocation.every(pos => pos % width < width - 1)
+  }
+
+  function leftCheck(array) {
+    return activeShapeLocation.every(pos => pos % width > 0)
+  }
+
+  function upCheck(array) {
+    return activeShapeLocation.every(pos => Math.floor(pos / width) > 0)
+  }
+
+  function downCheck(array) {
+    return activeShapeLocation.every(pos => Math.floor(pos / width) < height - 1)
+  }
+
   // this is the evenet listener that is waiting for keyup
   document.addEventListener('keyup', e => {
     
@@ -61,19 +77,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = Math.floor(idx / width)
         
         switch (e.keyCode) {
-          case 37: if (x > 0) return idx -= 1                // left 
+          case 37: if (leftCheck(activeShapeLocation)) return idx -= 1       // left 
             break
-          case 38: if (y > 0) return idx -= width            // up
+          case 38: if (upCheck(activeShapeLocation)) return idx -= width     // up
             break
-          case 39: if (x < width - 1) return idx += 1        // right
+          case 39: if (rightCheck(activeShapeLocation)) return idx += 1      // right
             break
-          case 40: if (y < height - 1) return idx += width   // down
+          case 40: if (downCheck(activeShapeLocation)) return idx += width   // down
             break
         }
       })
-      activeShapeLocation = newLocation
+      if (newLocation.every(x => x)) {
+        activeShapeLocation = newLocation
+      }
       drawShape(activeShapeLocation)
-      console.log('new shape location' ,activeShapeLocation)
+      console.log('new shape location', activeShapeLocation)
     }
   })
 
