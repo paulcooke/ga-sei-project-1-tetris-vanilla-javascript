@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const grid = document.querySelector('.grid')
   const cells = []
   let activeShapeLocation = []
-  const startLocation = 14
+  const startLocation = 4
   const shapes = []
   let currentShape = 0
   const directionKeys = [37,38,39,40]
-  
+  let currentShapeColor = ''
+
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
     for (let i = 0; i < width * height; i++) {
@@ -19,15 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // this function chooses the shape to use each time and reassigns current shape
-  function chooseShape() {
-    function makeShapes() {
-      const tShape = [0, 1, 2, 11]
-      shapes.push(tShape)
-    }
-    makeShapes()
-    currentShape = shapes[0]
+  function makeShape() {
+    const tShape = [10, 11, 12, 21]
+    const zShape = [11, 12, 20, 21]
+    const sShape = [10, 11, 21, 22]
+    const jShape = [1, 11, 20, 21]
+    const lShape = [1, 11, 21, 22]
+    const iShape = [1, 11, 21, 31]
+    const oShape = [10, 11, 20, 21]
+    shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
+    const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'yellow']
+    currentShape = shapes[Math.floor(Math.random() * shapes.length)]
+    currentShapeColor = shapeColors[shapes[currentShape]]
   }
-    
+  console.log(shapes)  
+
   // this function spawns a new shape at the top of the board, on location 14
   function spawnShape () {
     activeShapeLocation = currentShape.map(x => {
@@ -92,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   makeBoard()
-  chooseShape()
+  makeShape()
   console.log(currentShape)
   spawnShape()
   // document.querySelectorAll('div')[1].classList.add('green')
