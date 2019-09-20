@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
   // this function spawns a new shape at the top of the board, on location 14
   function spawnShape () {
-    activeShapeLocation = currentShape.map (x => {
+    activeShapeLocation = currentShape.map(x => {
       document.querySelectorAll('div')[x + startLocation + 1].classList.add('active-shape')
       return x + startLocation
     })
@@ -42,13 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  function drawCell(newCell) {
-    document.querySelectorAll('div')[newCell + 1].classList.add('active-shape')
-  }
-
   function drawShape(shapeArrayIn) {
     shapeArrayIn.forEach(idx => {
-      drawCell(idx)
+      document.querySelectorAll('div')[idx + 1].classList.add('active-shape')
     })
   }
 
@@ -62,19 +58,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const newLocation = activeShapeLocation.map(idx => {
         const x = idx % width
         const y = Math.floor(idx / width)
+        
         switch (e.keyCode) {
-          case 37: if (x > 0) return idx -= 1
+          case 37: if (x > 0) return idx -= 1                // left 
             break
-          case 38: if (y > 0) return idx -= width
+          case 38: if (y > 0) return idx -= width            // up
             break
-          case 39: if (x < width - 1) return idx += 1
+          case 39: if (x < width - 1) return idx += 1        // right
             break
-          case 40: if (y < width - 1) return idx += width
+          case 40: if (y < height - 1) return idx += width   // down
             break
         }
       })
       activeShapeLocation = newLocation
       drawShape(activeShapeLocation)
+      console.log('new shape location' ,activeShapeLocation)
     }
 
 
@@ -97,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   chooseShape()
   console.log(currentShape)
   spawnShape()
-  console.log(activeShapeLocation)
+  //console.log(activeShapeLocation)
   
 
   
