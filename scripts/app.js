@@ -3,137 +3,105 @@ document.addEventListener('DOMContentLoaded', () => {
   const height = 24
   const grid = document.querySelector('.grid')
   const cells = []
-  const activeShape = []
-
-  const tShape = [0, 1, 2, 11]
-  
+  let activeShapeLocation = []
   const startLocation = 14
-
-  // this bit makes the game board, 10 x 40
-  for (let i = 0; i < width * height; i++) {
-    const cell = document.createElement('div')
-    grid.appendChild(cell)
-    cells.push(cell)
+  const shapes = []
+  let currentShape = 0
+  
+  // this function makes the game board using the sizes specified at the start
+  function makeBoard () {
+    for (let i = 0; i < width * height; i++) {
+      const cell = document.createElement('div')
+      grid.appendChild(cell)
+      cells.push(cell)
+    }
   }
 
-  // put a shape on the board (starting with the t shape
-  function putTOnBoard(startLocation) {
-    tShape.forEach(ref => {
-      console.log(ref)
-      activeShape.push(ref + startLocation)
-      console.log(activeShape)
-    })
-    activeShape.forEach(x => {
-      cells[x].classList.add('active-shape')
-    })
+  // this function chooses the shape to use each time and reassigns current shape
+  function chooseShape() {
+    function makeShapes() {
+      const tShape = [0, 1, 2, 11]
+      shapes.push(tShape)
+    }
+    makeShapes()
+    currentShape = shapes[0]
   }
-  putTOnBoard(startLocation)
-  
-  //console.log([activeShape[0]])
-
-  
-  // move the shape around
-  function moveShape () {
-
- 
-
-    // redraw on movement
-    activeShape.forEach(partOfShape => {
-
-      document.addEventListener('keyup', e => {
     
-        cells[partOfShape].classList.remove('active-shape') // if using querySelector nth of it needs to be index plus 1 because it's the nth value not the index
-       
-        const x = partOfShape % width
-        //console.log('x value', x)
-        const y = Math.floor(partOfShape / width)
-        //console.log('y value', y)
-  
+  // this function spawns a new shape at the top of the board, on location 14
+  function spawnShape () {
+    activeShapeLocation = currentShape.map (x => {
+      document.querySelectorAll('div')[x + startLocation + 1].classList.add('active-shape')
+      return x + startLocation
+    })
+  }
+
+  // this function removes the class 'active-shape' from the divs currently in the active shape location
+  function clearShape(shapeArrayOut) {
+    shapeArrayOut.forEach(idx => {
+      document.querySelectorAll('div')[idx + 1].classList.remove('active-shape')
+    })
+  }
+
+  function drawCell(newCell) {
+    document.querySelectorAll('div')[newCell + 1].classList.add('active-shape')
+  }
+
+  function drawShape(shapeArrayIn) {
+    shapeArrayIn.forEach(idx => {
+      drawCell(idx)
+    })
+  }
+
+  // this is the evenet listener that is waiting for keyup
+  document.addEventListener('keyup', e => {
+    
+    if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40) {
+      clearShape(activeShapeLocation)
+      console.log(activeShapeLocation)
+
+      const newLocation = activeShapeLocation.map(idx => {
+        const x = idx % width
+        const y = Math.floor(idx / width)
         switch (e.keyCode) {
-          case 37: if (x > 0) partOfShape -= 1                // left
+          case 37: if (x > 0) return idx -= 1
             break
-          case 38: if (y > 0) partOfShape -= width            // up
+          case 38: if (y > 0) return idx -= width
             break
-          case 39: if (x < width - 1) partOfShape += 1        // right
+          case 39: if (x < width - 1) return idx += 1
             break
-          case 40: if (y < height - 1) partOfShape += width   // down
+          case 40: if (y < width - 1) return idx += width
             break
         }
-        // console.log('before adding', cells[partOfShape].classList)
-        cells[partOfShape].classList.add('active-shape')
-        // console.log('after adding', cells[partOfShape].classList)
-        
-        // it's overwriting itself, delete all then draw all...?
-  
-  
       })
-      
-    })
+      activeShapeLocation = newLocation
+      drawShape(activeShapeLocation)
+    }
 
-  }
+
+    // const x = playerIdx % width
+    // const y = Math.floor(playerIdx / width)
+    // switch (e.keyCode) {
+    //   case 37: if(x > 0) playerIdx -= 1
+    //     break
+    //   case 38: if(y > 0) playerIdx -= width
+    //     break
+    //   case 39: if(x < width - 1) playerIdx += 1
+    //     break
+    //   case 40: if(y < width - 1)playerIdx += width
+    //     break
+    // }
+    
+  })
+
+  makeBoard()
+  chooseShape()
+  console.log(currentShape)
+  spawnShape()
+  console.log(activeShapeLocation)
   
-  moveShape()
 
-
-  // activeShape.forEach(partOfShape => {
-  //   document.querySelectorAll('div')[partOfShape+1].classList.remove('shape-next-location')
-  //   cells[partOfShape].classList.add('active-shape')
-  // })
-
-
-
-
-  // const x = playerIdx % width
-  // const y = Math.floor(playerIdx / width
-
-  // let's move a shape
-  // document.addEventListener('keyup', (e) => {
-
-  //   cells[playerIdx].classList.remove('player')
-  //   const x = playerIdx % width
-  //   const y = Math.floor(playerIdx / width)
-
-  //   switch(e.keyCode) {
-  //     case 37: if(x > 0) playerIdx -= 1
-  //       break
-  //     case 38: if(y > 0) playerIdx -= width
-  //       break
-  //     case 39: if(x < width - 1) playerIdx += 1
-  //       break
-  //     case 40: if(y < width - 1)playerIdx += width
-  //       break
-  //   }
-
-  //   cells[playerIdx].classList.add('player')
-  // })
-
-
-
-
-/*  function handleClick(e) {
-    e.target.classList.add('player')
-  } */
   
-//   cells[playerIdx].classList.add('player')
 
-//   document.addEventListener('keyup', (e) => {
 
-//     cells[playerIdx].classList.remove('player')
-//     const x = playerIdx % width
-//     const y = Math.floor(playerIdx / width)
 
-//     switch(e.keyCode) {
-//       case 37: if(x > 0) playerIdx -= 1
-//         break
-//       case 38: if(y > 0) playerIdx -= width
-//         break
-//       case 39: if(x < width - 1) playerIdx += 1
-//         break
-//       case 40: if(y < width - 1)playerIdx += width
-//         break
-//     }
-
-//     cells[playerIdx].classList.add('player')
-//   })
-// 
 })
