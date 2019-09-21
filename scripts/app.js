@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
 
+  // experimental additions - new variables go here in testing and moved up once in use
+  let tickLength = 1000
+
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
     for (let i = 0; i < width * height; i++) {
@@ -67,21 +70,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // these functions check movement is possible before movement is attempted. they are called from the switch statement in the event listener
+  // these functions check movement possibilities, cell and row locations
   function rightCheck(array) {
-    return array.every(pos => pos % width < width - 1)
+    return array.every(pos => pos % width < width - 1 && !cells[pos + 1].classList.contains('occupied-block'))
   }
 
   function leftCheck(array) {
-    return array.every(pos => pos % width > 0)
+    return array.every(pos => pos % width > 0 && !cells[pos - 1].classList.contains('occupied-block'))
   }
 
   function upCheck(array) {
-    return array.every(pos => Math.floor(pos / width) > 0)
+    return array.every(pos => Math.floor(pos / width  && !cells[pos - 10].classList.contains('occupied-block')) > 0)
   }
 
   function downCheck(array) {
-    return array.every(pos => Math.floor(pos / width) < height - 1)
+    return array.every(pos => Math.floor(pos / width) < height - 1  && !cells[pos + 10].classList.contains('occupied-block'))
+  }
+
+  function checkLastRow(array) {
+    return array.some(block => block >= lastRowStartCell)
+  }
+
+  function stackCheck(array) {
+    return array.some( cellIdx => {
+      console.log(cellIdx + 10)
+      return cells[cellIdx + 10].classList.contains('occupied-block')
+    })
   }
 
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
@@ -107,23 +121,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
     
+
       // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
-      if (activeShapeLocation.some(block => block >= lastRowStartCell)) {
+      if (checkLastRow(activeShapeLocation) === true || stackCheck(activeShapeLocation) === true) {
         // remove class 'active-shape'
         clearShape(activeShapeLocation, 'active-shape')
-        // redraw shape in same location but with new class 'occupied-block
+        // redraw shape in same location but with new class 'occupied-block'
         drawShape(activeShapeLocation, 'occupied-block')
         // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
-        spawnShape()
-        console.log(currentShapeColor)
+        spawnShape()       
       } else {
         drawShape(activeShapeLocation, 'active-shape')
       }
-      
-      
-      
-      // makeShape()
-      
       console.log('new shape location', activeShapeLocation)
       
     }
@@ -133,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log(currentShape)
   spawnShape()
   //console.log(activeShapeLocation)
-  
+
 
 })
 
