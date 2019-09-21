@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const cells = []
   let activeShapeLocation = []
   const startLocation = 4
-  const shapes = []
   let currentShape = 0
   const directionKeys = [37,38,39,40]
-  let currentShapeColor = '' // not in use yet
+  let currentShapeColor = ''
+  const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
 
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
   function makeShape() {
+    const shapes = []
     const tShape = [10, 11, 12, 21]
     const zShape = [11, 12, 20, 21]
     const sShape = [10, 11, 21, 22]
@@ -46,16 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
-  function clearShape(shapeArrayOut) {
+  function clearShape(shapeArrayOut, classToRemove) {
     shapeArrayOut.forEach(idx => {
-      cells[idx].classList.remove('active-shape')
-      cells[idx].style.backgroundColor = 'white'
+      cells[idx].classList.remove(classToRemove)
+      cells[idx].style.backgroundColor = null
     })
   }
 
-  function drawShape(shapeArrayIn) {
+  function drawShape(shapeArrayIn, classToAdd) {
     shapeArrayIn.forEach(idx => {
-      cells[idx].classList.add('active-shape')
+      cells[idx].classList.add(classToAdd)
       cells[idx].style.backgroundColor = currentShapeColor
     })
   }
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', e => {
     
     if (directionKeys.includes(e.keyCode)) {
-      clearShape(activeShapeLocation)
+      clearShape(activeShapeLocation, 'active-shape')
       console.log(activeShapeLocation)
 
       activeShapeLocation = activeShapeLocation.map(idx => {        
@@ -98,8 +99,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return idx
       })
+      
+      console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
+      
+      
+      
+      if (activeShapeLocation.some(block => block >= lastRowStartCell)) {
+        activeShapeLocation.forEach(idx => cells[idx].classList.remove('active-shape'))
+        clearShape(activeShapeLocation, 'active-shape')
+        drawShape(activeShapeLocation, 'occupied-block')
+        // activeShapeLocation = 0
+        // activeShapeLocation.forEach(idx => cells[idx].classList.add('occupied-block'))
+        spawnShape()
+        console.log(currentShapeColor)
+        
+
+      } else {
+        drawShape(activeShapeLocation, 'active-shape')
+      }
+      
+      
+      
+      // makeShape()
+      
       console.log('new shape location', activeShapeLocation)
-      drawShape(activeShapeLocation)
+      
     }
   })
 
@@ -107,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log(currentShape)
   spawnShape()
   //console.log(activeShapeLocation)
-  cells[75].classList.add('occupied-block')
+  
 
 })
 

@@ -31,20 +31,45 @@ body {
   /* background-color: white */
 }
 
-.active-shape {
-  /* background-color: orange; // not needed now the shapes are colored */
+/* .active-shape {
+  background-color: orange; // not needed now the shapes are colored
 }
+*/
 
 .occupied-block {
-  background-color: grey
+  animation: flash 0.4s;
 }
 
 
+/* took the flash animation from animate.css */
+@-webkit-keyframes flash {
+  from,
+  1%,
+  to {
+    opacity: 1;
+  }
+
+  
+  75% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
+  from,
+  1%,
+  to {
+    opacity: 1;
+  }
 
 
-/* .grid div.player {
-  background-image: url(../assets/sprite-sheet.png);
-  background-size: 300px;
-  background-position-x: 0;
-  background-position-y: 0;
-} */
+  75% {
+    opacity: 0;
+  }
+}
+
+.flash {
+  -webkit-animation-name: flash;
+  animation-name: flash;
+}
+
