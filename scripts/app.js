@@ -106,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       
       console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
-      
-      
+    
       // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
       if (activeShapeLocation.some(block => block >= lastRowStartCell)) {
         // remove class 'active-shape'
