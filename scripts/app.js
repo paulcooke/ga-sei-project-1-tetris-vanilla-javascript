@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.appendChild(cell)
       cells.push(cell)
     }
+    for (let j = width * 3; j < width * 4; j++) {
+      cells[j].style.borderBottom = '1px solid grey'
+      // cells[j].style.backgroundColor = 'grey' - this doesn't work because it gets overwritten by the clear function once the shape moves
+      // maybe make background nul and put another div behind it?
+    }
   }
 
   // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
@@ -103,17 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
       
       
-      
+      // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
       if (activeShapeLocation.some(block => block >= lastRowStartCell)) {
-        activeShapeLocation.forEach(idx => cells[idx].classList.remove('active-shape'))
+        // remove class 'active-shape'
         clearShape(activeShapeLocation, 'active-shape')
+        // redraw shape in same location but with new class 'occupied-block
         drawShape(activeShapeLocation, 'occupied-block')
-        // activeShapeLocation = 0
-        // activeShapeLocation.forEach(idx => cells[idx].classList.add('occupied-block'))
+        // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
         spawnShape()
         console.log(currentShapeColor)
-        
-
       } else {
         drawShape(activeShapeLocation, 'active-shape')
       }

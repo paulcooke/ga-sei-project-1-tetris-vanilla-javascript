@@ -186,3 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
 //   })
 // 
 
+
+// an attempt at removing class - instead I modified the clear function to be able to take the class to clear
+//  activeShapeLocation.forEach(idx => cells[idx].classList.remove('active-shape'))
