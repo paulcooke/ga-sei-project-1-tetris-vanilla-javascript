@@ -11,10 +11,9 @@ body {
 }
 
 .grid {
-  
   margin-top: 30px;
   align-items: center;
-  /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2); */
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
@@ -29,19 +28,19 @@ body {
   flex-grow: 1;
   height: 20px;
   width: 20px;
+  /* background-color: white */
 }
 
 .active-shape {
-  background-color: orange;
+  /* background-color: orange; // not needed now the shapes are colored */
 }
 
-.shape-next-location {
-  background-color: green
+.occupied-block {
+  background-color: grey
 }
 
-.green {
-  background-color: green
-}
+
+
 
 /* .grid div.player {
   background-image: url(../assets/sprite-sheet.png);

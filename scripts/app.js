@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // this function chooses the shape to use each time and reassigns current shape
+  // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
   function makeShape() {
     const tShape = [10, 11, 12, 21]
     const zShape = [11, 12, 20, 21]
@@ -30,13 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const oShape = [10, 11, 20, 21]
     shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
     const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'rgb(243, 229, 79)']
-    const colorMatch = Math.floor(Math.random() * shapes.length)
+    const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
     currentShape = shapes[colorMatch]
     currentShapeColor = shapeColors[colorMatch]
   } 
 
-  // this function spawns a new shape at the top of the board, on location 14
+  // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
   function spawnShape () {
+    makeShape()
     activeShapeLocation = currentShape.map(x => {
       cells[x + startLocation].classList.add('active-shape')
       cells[x + startLocation].style.backgroundColor = currentShapeColor
@@ -59,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+
+  // these functions check movement is possible before movement is attempted. they are called from the switch statement in the event listener
   function rightCheck(array) {
     return array.every(pos => pos % width < width - 1)
   }
@@ -75,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return array.every(pos => Math.floor(pos / width) < height - 1)
   }
 
-  // this is the evenet listener that is waiting for keyup and organising movement
+  // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
     
     if (directionKeys.includes(e.keyCode)) {
@@ -101,10 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   makeBoard()
-  makeShape()
   console.log(currentShape)
   spawnShape()
   //console.log(activeShapeLocation)
+  cells[75].classList.add('occupied-block')
 
 })
 
