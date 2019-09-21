@@ -3,11 +3,20 @@
 }
 
 body {
-  /* align-items: center; */
+  align-items: center;
   display: flex;
+  flex-direction: column;
   height: 100vh;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0;
+}
+
+header {
+  
+}
+
+.controls {
+  
 }
 
 .grid {

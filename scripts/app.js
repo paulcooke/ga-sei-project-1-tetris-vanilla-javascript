@@ -9,10 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const directionKeys = [37,38,39,40]
   let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
+  const gameOverRowStartCell = 230
+  let gameOver = false
 
   // experimental additions - new variables go here in testing and moved up once in use
   let tickLength = 1000
 
+  // ---------- RUN GAME FUNCTIONS ----------
+
+  function playGame() {
+    makeBoard()
+    spawnShape()
+  }
+  
+  // ---------- GAME SETUP FUNCTIONS ----------
+  
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
     for (let i = 0; i < width * height; i++) {
@@ -44,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentShapeColor = shapeColors[colorMatch]
   } 
 
+  // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ----------
+
   // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
   function spawnShape () {
     makeShape()
@@ -69,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  // ---------- CHECKING FUNCTIONS ----------
 
-  // these functions check movement possibilities, cell and row locations
   function rightCheck(array) {
     return array.every(pos => pos % width < width - 1 && !cells[pos + 1].classList.contains('occupied-block'))
   }
@@ -98,13 +111,27 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  function checkGameOver() {
+    const checkArray = []
+    for (let i = gameOverRowStartCell; i < gameOverRowStartCell + width; i++) {
+      checkArray.push(i)
+    }
+    // console.log('is gameOver?', checkArray.some(idx => cells[idx].classList.contains('occupied-block')))
+    if (checkArray.some(idx => cells[idx].classList.contains('occupied-block'))) {
+      gameOver = true
+    }
+  }
+
+  // ---------- EVENT LISTENERS ----------
+
+  // const startButton = document.querySelector('#start-button')
+  // startButton.addEventListener('click', () => playGame())
+
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
     
     if (directionKeys.includes(e.keyCode)) {
       clearShape(activeShapeLocation, 'active-shape')
-      console.log(activeShapeLocation)
-
       activeShapeLocation = activeShapeLocation.map(idx => {        
         switch (e.keyCode) {
           case 37: if (leftCheck(activeShapeLocation)) idx -= 1       // left 
@@ -118,10 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return idx
       })
-      
       console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
     
-
       // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
       if (checkLastRow(activeShapeLocation) === true || stackCheck(activeShapeLocation) === true) {
         // remove class 'active-shape'
@@ -133,19 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         drawShape(activeShapeLocation, 'active-shape')
       }
-      console.log('new shape location', activeShapeLocation)
-      
+      console.log('new shape location', activeShapeLocation) 
+      checkGameOver()
     }
+    
   })
 
-  makeBoard()
-  console.log(currentShape)
-  spawnShape()
   //console.log(activeShapeLocation)
+  playGame()
 
+  
+}) // this is the close for the envelope window event listener
 
-})
-
-
-// Collision detection for downward movement happens in the down section of the move checks
-// need to put newly settled blocks in the settled blocks array, which must have settled class
