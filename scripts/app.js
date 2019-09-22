@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeShapeLocation = []
   const startLocation = 4
   let currentShape = 0
+  let currentShapeKey = 0
   const directionKeys = [37, 38, 39, 40]
   let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
@@ -41,18 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
   function makeShape() {
     const shapes = []
-    const tShape = [10, 11, 12, 21]
-    const zShape = [11, 12, 20, 21]
-    const sShape = [10, 11, 21, 22]
-    const jShape = [1, 11, 20, 21]
-    const lShape = [1, 11, 21, 22]
-    const iShape = [1, 11, 21, 31]
+    const tShape = [11, 20, 21, 22]
+    const zShape = [10, 11, 21, 22]
+    const sShape = [11, 12, 20, 21]
+    const jShape = [10, 20, 21, 22]
+    const lShape = [12, 20, 21, 22]
+    const iShape = [19, 20, 21, 22]
     const oShape = [10, 11, 20, 21]
     shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
+    const shapeKeys = [2, 2, 3, 2, 1, 1, 1] // these keys will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'rgb(243, 229, 79)']
     const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
     currentShape = shapes[colorMatch]
     currentShapeColor = shapeColors[colorMatch]
+    currentShapeKey = shapeKeys[colorMatch]
   } 
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ----------
@@ -148,9 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (e.keyCode === 87) {
       console.log('w was pressed')
+      console.log('current shape key', currentShapeKey)
     }
 
-
+    // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
+    // asks if all moves are possible before attempting any at all
     if (directionKeys.includes(e.keyCode)) {
       clearShape(activeShapeLocation, 'active-shape')
       activeShapeLocation = activeShapeLocation.map(idx => {        
