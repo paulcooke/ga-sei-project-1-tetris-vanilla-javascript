@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const directionKeys = [37,38,39,40]
   let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
-  const gameOverRowStartCell = 230
+  const gameOverRowStartCell = 30
   let gameOver = false
 
   // experimental additions - new variables go here in testing and moved up once in use
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  // ---------- CHECKING FUNCTIONS ----------
+  // ---------- CHECK FUNCTIONS ----------
 
   function rightCheck(array) {
     return array.every(pos => pos % width < width - 1 && !cells[pos + 1].classList.contains('occupied-block'))
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       checkArray.push(i)
     }
     // console.log('is gameOver?', checkArray.some(idx => cells[idx].classList.contains('occupied-block')))
-    if (checkArray.some(idx => cells[idx].classList.contains('occupied-block'))) {
+    if (checkArray.some(idx => cells[idx].classList.contains('occupied-block'))) {  // ??? think can just assign gameOver to this code and it'll return true/false correctly
       gameOver = true
     }
   }
@@ -153,17 +153,23 @@ document.addEventListener('DOMContentLoaded', () => {
         clearShape(activeShapeLocation, 'active-shape')
         // redraw shape in same location but with new class 'occupied-block'
         drawShape(activeShapeLocation, 'occupied-block')
+        checkGameOver()
+        if (gameOver) {
+          alert('game over! you are not as good at tetris as Moni!')
+        }
         // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
         spawnShape()       
       } else {
         drawShape(activeShapeLocation, 'active-shape')
       }
       console.log('new shape location', activeShapeLocation) 
-      checkGameOver()
+      
     }
     
   })
 
+
+  // ----------- CODE THAT RUNS! ----------
   //console.log(activeShapeLocation)
   playGame()
 
