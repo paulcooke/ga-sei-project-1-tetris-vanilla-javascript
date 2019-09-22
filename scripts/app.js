@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeShapeLocation = []
   const startLocation = 4
   let currentShape = 0
-  const directionKeys = [37,38,39,40]
+  const directionKeys = [37, 38, 39, 40]
   let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearShape(shapeArrayOut, classToRemove) {
     shapeArrayOut.forEach(idx => {
       cells[idx].classList.remove(classToRemove)
-      cells[idx].style.backgroundColor = null
+      cells[idx].style.backgroundColor = null // ??? how to get it to revert to listening to the css for styling?
     })
   }
 
@@ -117,8 +117,24 @@ document.addEventListener('DOMContentLoaded', () => {
       checkArray.push(i)
     }
     // console.log('is gameOver?', checkArray.some(idx => cells[idx].classList.contains('occupied-block')))
-    if (checkArray.some(idx => cells[idx].classList.contains('occupied-block'))) {  // ??? think can just assign gameOver to this code and it'll return true/false correctly
-      gameOver = true
+    gameOver = checkArray.some(idx => cells[idx].classList.contains('occupied-block'))
+  }
+
+  function lockCheck(array) {
+    // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
+    if (checkLastRow(array) === true || stackCheck(array) === true) {
+      // remove class 'active-shape'
+      clearShape(array, 'active-shape')
+      // redraw shape in same location but with new class 'occupied-block'
+      drawShape(array, 'occupied-block')
+      checkGameOver()
+      if (gameOver) {
+        alert('game over! you are not as good at tetris as Moni!')
+      }
+      // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
+      spawnShape()       
+    } else {
+      drawShape(array, 'active-shape')
     }
   }
 
@@ -130,6 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
     
+    if (e.keyCode === 87) {
+      console.log('w was pressed')
+    }
+
+
     if (directionKeys.includes(e.keyCode)) {
       clearShape(activeShapeLocation, 'active-shape')
       activeShapeLocation = activeShapeLocation.map(idx => {        
@@ -145,34 +166,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return idx
       })
+      lockCheck(activeShapeLocation)
       console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
-    
-      // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
-      if (checkLastRow(activeShapeLocation) === true || stackCheck(activeShapeLocation) === true) {
-        // remove class 'active-shape'
-        clearShape(activeShapeLocation, 'active-shape')
-        // redraw shape in same location but with new class 'occupied-block'
-        drawShape(activeShapeLocation, 'occupied-block')
-        checkGameOver()
-        if (gameOver) {
-          alert('game over! you are not as good at tetris as Moni!')
-        }
-        // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
-        spawnShape()       
-      } else {
-        drawShape(activeShapeLocation, 'active-shape')
-      }
-      console.log('new shape location', activeShapeLocation) 
-      
     }
+
     
-  })
+    console.log('new shape location', activeShapeLocation)   
+  }) // close event listener for keyup
 
 
   // ----------- CODE THAT RUNS! ----------
+
   //console.log(activeShapeLocation)
   playGame()
 
   
-}) // this is the close for the envelope window event listener
+}) // close DOM event listener
 
