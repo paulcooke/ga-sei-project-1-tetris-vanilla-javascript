@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // move variables
   const directionKeys = [37, 38, 39, 40]
 
+  // rotate variables
+  const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
+  let shapeKeyLocation
+
   // experimental additions - new variables go here in testing and moved up once in use
   let tickLength = 1000
 
@@ -50,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { name: 'zShape', shapeStartAddress: [10, 11, 21, 22], color: 'red', centerId: 2 },
       { name: 'sShape', shapeStartAddress: [11, 12, 20, 21], color: 'green', centerId: 3 },
       { name: 'jShape', shapeStartAddress: [10, 20, 21, 22], color: 'blue', centerId: 2 },
-      { name: 'lShape', shapeStartAddress: [12, 20, 21, 22], color: 'orange', centerId: 1 },
+      { name: 'lShape', shapeStartAddress: [12, 20, 21, 22], color: 'orange', centerId: 2 },
       { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], color: 'cyan', centerId: 1 },
       { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], color: 'rgb(243, 229, 79)', centerId: 1 }
     ]
@@ -66,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeShapeLocation = currentShape.shapeStartAddress.map(x => {
       cells[x + startLocation].classList.add('active-shape')
       cells[x + startLocation].style.backgroundColor = currentShape.color
+      shapeKeyLocation = currentShape.centerId
       return x + startLocation
     })
   }
@@ -126,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
     if (checkLastRow(array) === true || stackCheck(array) === true) {
       // remove class 'active-shape'
-      clearShape(array, 'active-shape')
+      // clearShape(array, 'active-shape') // not needed as there's a clear before the move attempt
       // redraw shape in same location but with new class 'occupied-block'
       drawShape(array, 'occupied-block')
       checkGameOver()
@@ -150,20 +155,35 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // rotation keys. 87 = 'w', for rotating right 90 degrees
     if (e.keyCode === 87) {
-      const rotateRightInstructions = [2, (width + 1), (2 * width), -(width + 1), 0, (width - 1), -(2 * width), -(width - 1), -2]
-      const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
-      const shapeKeyLocation = activeShapeLocation[currentShape.centerId]
-      console.log('key location:', shapeKeyLocation)
+      // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
+      const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]
+      // console.log(shapeKeyLocation)
       
-      let rotateCheckGrid = checkArrayGridMaker.map(instruction => shapeKeyLocation - width - 1 + instruction)
+      // the grid below is what we will use to map the future moves of the current shape to rotate it
+      const rotateCheckGrid = checkArrayGridMaker.map(instruction => activeShapeLocation[shapeKeyLocation] - width - 1 + instruction)
       console.log('grid', rotateCheckGrid)
+      // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
       
-      // for (let i = shapeKeyLocation - width - 1; i < shapeKeyLocation + width + 1; i++) {
-      //   console.log('grid', i)
-      // }
+      clearShape(activeShapeLocation, 'active-shape')
+      const potentialRotation = []
+      
+      rotateCheckGrid.forEach(location => {
+        if (activeShapeLocation.includes(location)) {
+          potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
+        }
+      })
+
+      console.log(potentialRotation)
+      // reassign the shape key location so that the code works next time around
+      // get the index in potentialRotation that holds the value that was at the index of the shapeKeyLocation in activeShapeLocation
+      shapeKeyLocation = potentialRotation.indexOf(activeShapeLocation[shapeKeyLocation])
+
+      activeShapeLocation = potentialRotation
+      lockCheck(activeShapeLocation)
 
       console.log('w was pressed')
-      console.log('current shape key', currentShape.centerId)
+      console.log('current shape key:', currentShape.centerId, 'location:', shapeKeyLocation)
+      console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
     }
 
     // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
