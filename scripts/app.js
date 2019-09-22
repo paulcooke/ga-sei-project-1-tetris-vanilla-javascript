@@ -148,7 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
     
+    // rotation keys. 87 = 'w', for rotating right 90 degrees
     if (e.keyCode === 87) {
+      const rotateRightInstructions = [2, (width + 1), (2 * width), -(width + 1), 0, (width - 1), -(2 * width), -(width - 1), -2]
+      const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
+      const shapeKeyLocation = activeShapeLocation[currentShape.centerId]
+      console.log('key location:', shapeKeyLocation)
+      
+      let rotateCheckGrid = checkArrayGridMaker.map(instruction => shapeKeyLocation - width - 1 + instruction)
+      console.log('grid', rotateCheckGrid)
+      
+      // for (let i = shapeKeyLocation - width - 1; i < shapeKeyLocation + width + 1; i++) {
+      //   console.log('grid', i)
+      // }
+
       console.log('w was pressed')
       console.log('current shape key', currentShape.centerId)
     }
