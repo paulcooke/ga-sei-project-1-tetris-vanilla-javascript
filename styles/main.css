@@ -40,6 +40,11 @@ header {
   /* background-color: white */
 }
 
+h2, h4, p {
+  text-align: center;
+  margin: 10px 20px;
+}
+
 /* .active-shape {
   background-color: orange; // not needed now the shapes are colored
 }

@@ -17,13 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // move variables
   const directionKeys = [37, 38, 39, 40]
+  let direction
 
   // rotation variables
   const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
   const fiveShapes = ['tShape', 'zShape', 'sShape', 'jShape', 'lShape']
   
   // experimental additions - new variables go here in testing and moved up once in use
-  let tickLength = 1000
+  // let tickLength = 1000
 
   // ---------- RUN GAME FUNCTIONS ----------
 
@@ -52,13 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function makeShape() {
     // centerIdx properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapes = [ 
-      { name: 'tShape', shapeStartAddress: [11, 20, 21, 22], color: 'purple', centerIdx: 2 },
-      { name: 'zShape', shapeStartAddress: [10, 11, 21, 22], color: 'red', centerIdx: 2 },
-      { name: 'sShape', shapeStartAddress: [11, 12, 20, 21], color: 'green', centerIdx: 3 },
-      { name: 'jShape', shapeStartAddress: [10, 20, 21, 22], color: 'blue', centerIdx: 2 },
-      { name: 'lShape', shapeStartAddress: [12, 20, 21, 22], color: 'orange', centerIdx: 2 },
-      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], color: 'cyan', centerIdx: 1 },
-      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], color: 'rgb(243, 229, 79)', centerIdx: 1 }
+      { name: 'tShape', shapeStartAddress: [20, 29, 30, 31], color: 'purple', centerIdx: 2 },
+      { name: 'zShape', shapeStartAddress: [19, 20, 30, 31], color: 'red', centerIdx: 2 },
+      { name: 'sShape', shapeStartAddress: [20, 21, 29, 30], color: 'green', centerIdx: 3 },
+      { name: 'jShape', shapeStartAddress: [19, 29, 30, 31], color: 'blue', centerIdx: 2 },
+      { name: 'lShape', shapeStartAddress: [21, 29, 30, 31], color: 'orange', centerIdx: 2 },
+      { name: 'iShape', shapeStartAddress: [29, 30, 31, 32], color: 'cyan', centerIdx: 1 },
+      { name: 'oShape', shapeStartAddress: [20, 21, 30, 31], color: 'rgb(243, 229, 79)', centerIdx: 1 }
     ]
     const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
     currentShape = shapes[colorMatch]
@@ -144,17 +145,39 @@ document.addEventListener('DOMContentLoaded', () => {
       spawnShape()       
     } else {
       drawShape(array, 'active-shape')
+      activeShapeLocation = array
     }
   }
+
+  // ---------- MOVEMENT & ROTATION FUNCTIONS ----------
+
+  function moveShape(array, direction) {
+    clearShape(array, 'active-shape')
+    array = array.map(idx => {        
+      switch (direction) {
+        case 'left': if (leftCheck(array)) idx -= 1       // left 
+          break
+        case 'up': if (upCheck(array)) idx -= width     // up
+          break
+        case 'right': if (rightCheck(array)) idx += 1      // right
+          break
+        case 'down': if (downCheck(array)) idx += width   // down
+          break
+      }
+      return idx
+    })
+    lockCheck(array)
+  }  
+  
 
   // ---------- EVENT LISTENERS ----------
 
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
 
-    if (fiveShapes.includes(currentShape.name)) {  
-      // rotation keys. 87 = 'w', for rotating right 90 degrees
-      if (e.keyCode === 87) {
+    // rotation keys. 87 = 'w', for rotating right 90 degrees
+    if (e.keyCode === 87) {
+      if (fiveShapes.includes(currentShape.name)) {  
         // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
         const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
         // the grid below is what we will use to map the future moves of the current shape to rotate it
@@ -182,34 +205,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
     // asks if all moves are possible before attempting any at all
+
     if (directionKeys.includes(e.keyCode)) {
-      clearShape(activeShapeLocation, 'active-shape')
-      activeShapeLocation = activeShapeLocation.map(idx => {        
-        switch (e.keyCode) {
-          case 37: if (leftCheck(activeShapeLocation)) idx -= 1       // left 
-            break
-          case 38: if (upCheck(activeShapeLocation)) idx -= width     // up
-            break
-          case 39: if (rightCheck(activeShapeLocation)) idx += 1      // right
-            break
-          case 40: if (downCheck(activeShapeLocation)) idx += width   // down
-            break
-        }
-        return idx
-      })
-      lockCheck(activeShapeLocation)
+      switch (e.keyCode) {
+        case 37: direction = 'left' 
+          break
+        case 38: direction = 'up'
+          break
+        case 39: direction = 'right'
+          break
+        case 40: direction = 'down'
+          break
+      }
+      moveShape(activeShapeLocation, direction)
+      console.log('new shape location', activeShapeLocation)   
     }
 
-    
-    console.log('new shape location', activeShapeLocation)   
   }) // close event listener for keyup
-
 
   // ----------- CODE THAT RUNS! ----------
 
   //console.log(activeShapeLocation)
-  playGame()
+  playGame() 
 
-  
 }) // close DOM event listener
 
