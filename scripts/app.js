@@ -1,17 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // general game variables
   const width = 10
   const height = 24
   const grid = document.querySelector('.grid')
   const cells = []
-  let activeShapeLocation = []
   const startLocation = 4
-  let currentShape = 0
-  let currentShapeKey = 0
-  const directionKeys = [37, 38, 39, 40]
-  let currentShapeColor = ''
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
   let gameOver = false
+  
+  // shape variables
+  let activeShapeLocation = []
+  let currentShape = {}
+  
+  // move variables
+  const directionKeys = [37, 38, 39, 40]
 
   // experimental additions - new variables go here in testing and moved up once in use
   let tickLength = 1000
@@ -41,21 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
   function makeShape() {
-    const shapes = []
-    const tShape = [11, 20, 21, 22]
-    const zShape = [10, 11, 21, 22]
-    const sShape = [11, 12, 20, 21]
-    const jShape = [10, 20, 21, 22]
-    const lShape = [12, 20, 21, 22]
-    const iShape = [19, 20, 21, 22]
-    const oShape = [10, 11, 20, 21]
-    shapes.push(tShape, zShape, sShape, jShape, lShape, iShape, oShape)
-    const shapeKeys = [2, 2, 3, 2, 1, 1, 1] // these keys will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
-    const shapeColors = ['purple', 'red', 'green', 'blue', 'orange', 'cyan', 'rgb(243, 229, 79)']
+    // centerID properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
+    const shapes = [ 
+      { name: 'tShape', shapeStartAddress: [11, 20, 21, 22], color: 'purple', centerId: 2 },
+      { name: 'zShape', shapeStartAddress: [10, 11, 21, 22], color: 'red', centerId: 2 },
+      { name: 'sShape', shapeStartAddress: [11, 12, 20, 21], color: 'green', centerId: 3 },
+      { name: 'jShape', shapeStartAddress: [10, 20, 21, 22], color: 'blue', centerId: 2 },
+      { name: 'lShape', shapeStartAddress: [12, 20, 21, 22], color: 'orange', centerId: 1 },
+      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], color: 'cyan', centerId: 1 },
+      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], color: 'rgb(243, 229, 79)', centerId: 1 }
+    ]
     const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
     currentShape = shapes[colorMatch]
-    currentShapeColor = shapeColors[colorMatch]
-    currentShapeKey = shapeKeys[colorMatch]
   } 
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ----------
@@ -63,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
   function spawnShape () {
     makeShape()
-    activeShapeLocation = currentShape.map(x => {
+    activeShapeLocation = currentShape.shapeStartAddress.map(x => {
       cells[x + startLocation].classList.add('active-shape')
-      cells[x + startLocation].style.backgroundColor = currentShapeColor
+      cells[x + startLocation].style.backgroundColor = currentShape.color
       return x + startLocation
     })
   }
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawShape(shapeArrayIn, classToAdd) {
     shapeArrayIn.forEach(idx => {
       cells[idx].classList.add(classToAdd)
-      cells[idx].style.backgroundColor = currentShapeColor
+      cells[idx].style.backgroundColor = currentShape.color
     })
   }
 
@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function stackCheck(array) {
     return array.some( cellIdx => {
-      console.log(cellIdx + 10)
       return cells[cellIdx + 10].classList.contains('occupied-block')
     })
   }
@@ -151,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (e.keyCode === 87) {
       console.log('w was pressed')
-      console.log('current shape key', currentShapeKey)
+      console.log('current shape key', currentShape.centerId)
     }
 
     // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
@@ -172,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return idx
       })
       lockCheck(activeShapeLocation)
-      console.log(activeShapeLocation.some(block => block >= lastRowStartCell)) // checks if any part of the active shape is in the final row
     }
 
     
