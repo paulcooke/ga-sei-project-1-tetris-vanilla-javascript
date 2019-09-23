@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // rotation variables
   const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
   const fiveShapes = ['tShape', 'zShape', 'sShape', 'jShape', 'lShape']
+  let potentialCenterIdx
   
   // experimental additions - new variables go here in testing and moved up once in use
   // let tickLength = 1000
@@ -157,11 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
       switch (direction) {
         case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= 1         // left 
           break
-        case 'up': if (upCheck(arrayToMove)) idx -= width         // up
+        case 'up': if (upCheck(arrayToMove)) idx -= width               // up
           break
         case 'right': if (rightCheck(arrayToMove, 0, 0)) idx += 1       // right
           break
-        case 'down': if (downCheck(arrayToMove)) idx += width     // down
+        case 'down': if (downCheck(arrayToMove)) idx += width           // down
           break
       }
       return idx
@@ -169,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
     lockCheck(arrayToMove)
   }  
   
-  // return the possible final position after rotating right 90 degrees
-  function rotateFiveRight(arrayToRotate) {
+  // return the *POSSIBLEe* final position after rotating right 90 degrees
+  function rotateFiveRightCheck(arrayToRotate) {
     // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
     const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
     // the grid below is what we will use to map the future moves of the current shape to rotate it
@@ -184,7 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
         potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
       }
     })
+    potentialCenterIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
     return potentialRotation
+  }
+
+  function rotateFiveRigthDo(active, potential) {
+    potential = rotateFiveRightCheck(active)
+    currentShape.centerIdx = potential.indexOf(active[currentShape.centerIdx])
+    active = potential
+    lockCheck(active)
   }
 
   // ---------- EVENT LISTENERS ----------
@@ -196,17 +205,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.keyCode === 87) {
       if (fiveShapes.includes(currentShape.name)) {  
         //first let' check the move rules, stop it rotating if it breaks them
-        const potentialRotation = rotateFiveRight(activeShapeLocation)
+        const potentialRotation = rotateFiveRightCheck(activeShapeLocation)
         
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
           // console.log('oh no! move not possible!')
+          console.log(potentialCenterIdx)
+          // cna we check if the index of the center is bigger than the index of the center of the potential rotation?
+          if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
+            moveShape(activeShapeLocation, 'right')
+            console.log('kicked right!')
+            rotateFiveRigthDo(activeShapeLocation, potentialRotation)
+          } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
+            moveShape(activeShapeLocation, 'left')
+            console.log('kicked left!')
+            rotateFiveRigthDo(activeShapeLocation, potentialRotation)
+          }
           lockCheck(activeShapeLocation)
         } else {
           // reassign the shape key location so that the code works next time around
           // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
-          currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
-          activeShapeLocation = potentialRotation
-          lockCheck(activeShapeLocation)
+          rotateFiveRigthDo(activeShapeLocation, potentialRotation)
+          // currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
+          // activeShapeLocation = potentialRotation
+          // lockCheck(activeShapeLocation)
         }
         
         
