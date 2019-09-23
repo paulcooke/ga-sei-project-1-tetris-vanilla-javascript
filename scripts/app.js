@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- CHECK FUNCTIONS ----------
 
-  function rightCheck(array, offset) {
-    return array.every(pos => pos % width < width - 1 + offset && !cells[pos + 1].classList.contains('occupied-block'))
+  function rightCheck(array, offsetLocation, offsetIdx) {
+    return array.every(pos => pos % width < width - 1 + offsetLocation && !cells[pos + 1 + offsetIdx].classList.contains('occupied-block'))
   }
 
-  function leftCheck(array, offset) {
-    return array.every(pos => pos % width > (0 + offset) && !cells[pos - 1].classList.contains('occupied-block'))
+  function leftCheck(array, offsetLocation, offsetIdx) {
+    return array.every(pos => pos % width > (0 + offsetLocation) && !cells[pos - 1 + offsetIdx].classList.contains('occupied-block'))
   }
 
   function upCheck(array) {
@@ -155,11 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clearShape(arrayToMove, 'active-shape')
     arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
-        case 'left': if (leftCheck(arrayToMove, 0)) idx -= 1         // left 
+        case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= 1         // left 
           break
         case 'up': if (upCheck(arrayToMove)) idx -= width         // up
           break
-        case 'right': if (rightCheck(arrayToMove, 0)) idx += 1       // right
+        case 'right': if (rightCheck(arrayToMove, 0, 0)) idx += 1       // right
           break
         case 'down': if (downCheck(arrayToMove)) idx += width     // down
           break
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //first let' check the move rules, stop it rotating if it breaks them
         const potentialRotation = rotateFiveRight(activeShapeLocation)
         
-        if (!leftCheck(potentialRotation, 0) && !rightCheck(potentialRotation, 0)) {
+        if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
           console.log('oh no! move not possible!')
           lockCheck(activeShapeLocation)
         } else {
