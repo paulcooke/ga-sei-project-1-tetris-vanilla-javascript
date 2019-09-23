@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- CHECK FUNCTIONS ----------
 
-  function rightCheck(array) {
-    return array.every(pos => pos % width < width - 1 && !cells[pos + 1].classList.contains('occupied-block'))
+  function rightCheck(array, offset) {
+    return array.every(pos => pos % width < width - 1 + offset && !cells[pos + 1].classList.contains('occupied-block'))
   }
 
-  function leftCheck(array) {
-    return array.every(pos => pos % width > 0 && !cells[pos - 1].classList.contains('occupied-block'))
+  function leftCheck(array, offset) {
+    return array.every(pos => pos % width > (0 + offset) && !cells[pos - 1].classList.contains('occupied-block'))
   }
 
   function upCheck(array) {
@@ -155,11 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clearShape(arrayToMove, 'active-shape')
     arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
-        case 'left': if (leftCheck(arrayToMove)) idx -= 1         // left 
+        case 'left': if (leftCheck(arrayToMove, 0)) idx -= 1         // left 
           break
         case 'up': if (upCheck(arrayToMove)) idx -= width         // up
           break
-        case 'right': if (rightCheck(arrayToMove)) idx += 1       // right
+        case 'right': if (rightCheck(arrayToMove, 0)) idx += 1       // right
           break
         case 'down': if (downCheck(arrayToMove)) idx += width     // down
           break
@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lockCheck(arrayToMove)
   }  
   
+  // return the possible final position after rotating right 90 degrees
   function rotateFiveRight(arrayToRotate) {
     // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
     const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
@@ -183,13 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
       }
     })
-    console.log(potentialRotation)
-    console.log('current location of center', arrayToRotate[currentShape.centerIdx])
-    // reassign the shape key location so that the code works next time around
-    // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
-    currentShape.centerIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
-    arrayToRotate = potentialRotation
-    lockCheck(arrayToRotate)
+    return potentialRotation
   }
 
   // ---------- EVENT LISTENERS ----------
@@ -200,9 +195,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // rotation keys. 87 = 'w', for rotating right 90 degrees
     if (e.keyCode === 87) {
       if (fiveShapes.includes(currentShape.name)) {  
-        rotateFiveRight(activeShapeLocation)
+        //first let' check the move rules, stop it rotating if it breaks them
+        const potentialRotation = rotateFiveRight(activeShapeLocation)
         
-
+        if (!leftCheck(potentialRotation, 0) && !rightCheck(potentialRotation, 0)) {
+          console.log('oh no! move not possible!')
+          lockCheck(activeShapeLocation)
+        } else {
+          currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
+          activeShapeLocation = potentialRotation
+          lockCheck(activeShapeLocation)
+        }
+        
+        // reassign the shape key location so that the code works next time around
+        // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
+        
         
         
         
