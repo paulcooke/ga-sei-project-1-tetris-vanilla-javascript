@@ -156,17 +156,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- MOVEMENT & ROTATION FUNCTIONS ---------- //
 
+  // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
+  // asks if all moves are possible before attempting any at all
   function moveShape(arrayToMove, direction, distance) {
     clearShape(arrayToMove, 'active-shape')
     arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
         case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= distance         // left 
           break
-        case 'up': if (upCheck(arrayToMove)) idx -= (width * distance)               // up
+        case 'up': if (upCheck(arrayToMove)) idx -= (width * distance)         // up
           break
         case 'right': if (rightCheck(arrayToMove, 0, 0)) idx += distance       // right
           break
-        case 'down': if (downCheck(arrayToMove)) idx += (width * distance)           // down
+        case 'down': if (downCheck(arrayToMove)) idx += (width * distance)     // down
           break
       }
       return idx
@@ -295,16 +297,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
           // console.log('oh no! move not possible!')
           console.log(potentialCenterIdx)
-          // cna we check if the index of the center is bigger than the index of the center of the potential rotation?
           // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
+            if (iRotationPosition === 4) {
+              moveShape(activeShapeLocation, 'right', 2)
+              rotateIRigthDo(activeShapeLocation, potentialRotation)  
+            } else {     
+              moveShape(activeShapeLocation, 'right', 1)
+              rotateIRigthDo(activeShapeLocation, potentialRotation)
+            }
+          } else if (activeShapeLocation[currentShape.centerIdx] % width === 1 && iRotationPosition === 4) {
             moveShape(activeShapeLocation, 'right', 1)
-            // console.log('kicked right!')
-            // console.log(cells[currentShape.centerIdx - 1].classList)
             rotateIRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
+            if (iRotationPosition === 2) {
+              moveShape(activeShapeLocation, 'left', 2)
+              rotateIRigthDo(activeShapeLocation, potentialRotation)
+            } else {
+              moveShape(activeShapeLocation, 'left', 1)
+              rotateIRigthDo(activeShapeLocation, potentialRotation)
+            }           
+          } else if (activeShapeLocation[currentShape.centerIdx] % width === 8 && iRotationPosition === 2) {
             moveShape(activeShapeLocation, 'left', 1)
-            // console.log('kicked left!')
             rotateIRigthDo(activeShapeLocation, potentialRotation)
           }
           lockCheck(activeShapeLocation)
@@ -316,8 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 
-    // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
-    // asks if all moves are possible before attempting any at all
     if (directionKeys.includes(e.keyCode)) {
       switch (e.keyCode) {
         case 37: direction = 'left' 
