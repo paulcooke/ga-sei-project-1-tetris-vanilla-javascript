@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
   const fiveShapes = ['tShape', 'zShape', 'sShape', 'jShape', 'lShape']
   let potentialCenterIdx
-  
+  let iRotationPosition
+  let tempIRotationPosition
+
   // experimental additions - new variables go here in testing and moved up once in use
   // let tickLength = 1000
 
@@ -71,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
   function spawnShape () {
     makeShape()
+    if (currentShape.name === 'iShape') iRotationPosition = 1 
+    console.log(iRotationPosition) // iRotationPosition used to id the position that the i is in
     activeShapeLocation = currentShape.shapeStartAddress.map(x => {
       cells[x + startLocation].classList.add('active-shape')
       cells[x + startLocation].style.backgroundColor = currentShape.color
@@ -180,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
     clearShape(arrayToRotate, 'active-shape')
     const potentialRotation = []
-    rotateCheckGrid.forEach(location => {
-      if (arrayToRotate.includes(location)) {
-        potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
+    rotateCheckGrid.forEach(idx => {
+      if (arrayToRotate.includes(idx)) {
+        potentialRotation.push(idx + rotateRightInstructions[rotateCheckGrid.indexOf(idx)])
       }
     })
     potentialCenterIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
@@ -199,9 +203,61 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       active = potential
       lockCheck(active)
+    } 
+  }
+
+  function rotateIRightCheck(arrayToRotate) {
+    const i1To2 = [-(2 * width) + 1, - width, -1, width - 2]
+    const i2To3 = [width - 1, 0, - width + 1, -(2 * width) + 2]
+    const i3To4 = [- width + 2, 1, width, (2 * width) - 1]
+    const i4To1 = [(2 * width) - 2, width - 1, 0, - width + 1]
+
+    clearShape(arrayToRotate, 'active-shape')
+    const potentialRotation = []
+    if (iRotationPosition === 2) {
+      console.log(iRotationPosition)
+      console.log('attempting 2 to 3')
+      for (let i = 0; i < arrayToRotate.length; i++) {
+        potentialRotation.push(arrayToRotate[i] + i2To3[i])
+      }
+      tempIRotationPosition = 3
+    } else if (iRotationPosition === 3) {
+      console.log(iRotationPosition)
+      console.log('attempting 3 to 4')
+      for (let i = 0; i < arrayToRotate.length; i++) {
+        potentialRotation.push(arrayToRotate[i] + i3To4[i])
+      } 
+      tempIRotationPosition = 4
+    } else if (iRotationPosition === 4) {
+      console.log(iRotationPosition)
+      console.log('attempting 4 to 1')
+      for (let i = 0; i < arrayToRotate.length; i++) {
+        potentialRotation.push(arrayToRotate[i] + i4To1[i])
+      }
+      tempIRotationPosition = 1
+    } else {
+      console.log(iRotationPosition)
+      console.log('attempting 1 to 2')
+      for (let i = 0; i < arrayToRotate.length; i++) {
+        potentialRotation.push(arrayToRotate[i] + i1To2[i])
+      }
+      tempIRotationPosition = 2
     }
-      
-    // ??? put a check in here to not move over occupied blocks ???
+    console.log('potential location is', potentialRotation)
+    return potentialRotation
+  }
+
+  function rotateIRigthDo(active, potential) {
+    potential = rotateIRightCheck(active)
+    // reassign the shape key location so that the code works next time around
+    // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
+    if (!leftCheck(potential, 0, 1) && !rightCheck(potential, 0, -1)) {
+      lockCheck(active)
+    } else {
+      active = potential
+      iRotationPosition = tempIRotationPosition
+      lockCheck(active)
+    } 
   }
 
   // ---------- EVENT LISTENERS ---------- //
@@ -241,11 +297,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // console.log('current shape key:', currentShape.centerIdx, 'location:', currentShape.centerIdx)
         // console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
       }
+
+      if (currentShape.name === 'iShape') {
+        const potentialRotation = rotateIRightCheck(activeShapeLocation)
+        rotateIRigthDo(activeShapeLocation, potentialRotation)
+      }
     }
+
+    
 
     // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
     // asks if all moves are possible before attempting any at all
-
     if (directionKeys.includes(e.keyCode)) {
       switch (e.keyCode) {
         case 37: direction = 'left' 
