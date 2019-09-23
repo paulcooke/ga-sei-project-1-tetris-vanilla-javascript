@@ -27,14 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // experimental additions - new variables go here in testing and moved up once in use
   // let tickLength = 1000
 
-  // ---------- RUN GAME FUNCTIONS ----------
+  // ---------- RUN GAME FUNCTIONS ---------- //
 
   function playGame() {
     makeBoard()
     spawnShape()
   }
   
-  // ---------- GAME SETUP FUNCTIONS ----------
+  // ---------- GAME SETUP FUNCTIONS ---------- //
   
   // this function makes the game board using the sizes specified at the start
   function makeBoard () {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentShape = shapes[colorMatch]
   } 
 
-  // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ----------
+  // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
 
   // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
   function spawnShape () {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  // ---------- CHECK FUNCTIONS ----------
+  // ---------- CHECK FUNCTIONS ---------- //
 
   function rightCheck(array, offsetLocation, offsetIdx) {
     return array.every(pos => pos % width < width - 1 + offsetLocation && !cells[pos + 1 + offsetIdx].classList.contains('occupied-block'))
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ---------- MOVEMENT & ROTATION FUNCTIONS ----------
+  // ---------- MOVEMENT & ROTATION FUNCTIONS ---------- //
 
   function moveShape(arrayToMove, direction) {
     clearShape(arrayToMove, 'active-shape')
@@ -191,12 +191,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function rotateFiveRigthDo(active, potential) {
     potential = rotateFiveRightCheck(active)
+    // reassign the shape key location so that the code works next time around
+    // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
     currentShape.centerIdx = potential.indexOf(active[currentShape.centerIdx])
-    active = potential
-    lockCheck(active)
+    if (!leftCheck(potential, 0, 1) && !rightCheck(potential, 0, -1)) {
+      lockCheck(active)
+    } else {
+      active = potential
+      lockCheck(active)
+    }
+      
+    // ??? put a check in here to not move over occupied blocks ???
   }
 
-  // ---------- EVENT LISTENERS ----------
+  // ---------- EVENT LISTENERS ---------- //
 
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
@@ -211,27 +219,24 @@ document.addEventListener('DOMContentLoaded', () => {
           // console.log('oh no! move not possible!')
           console.log(potentialCenterIdx)
           // cna we check if the index of the center is bigger than the index of the center of the potential rotation?
+          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
             moveShape(activeShapeLocation, 'right')
-            console.log('kicked right!')
-            console.log(cells[currentShape.centerIdx - 1].classList)
+            // console.log('kicked right!')
+            // console.log(cells[currentShape.centerIdx - 1].classList)
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
             moveShape(activeShapeLocation, 'left')
-            console.log('kicked left!')
+            // console.log('kicked left!')
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           }
           lockCheck(activeShapeLocation)
         } else {
-          // reassign the shape key location so that the code works next time around
-          // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
           rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           // currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
           // activeShapeLocation = potentialRotation
           // lockCheck(activeShapeLocation)
         }
-        
-        
         // console.log('w was pressed')
         // console.log('current shape key:', currentShape.centerIdx, 'location:', currentShape.centerIdx)
         // console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
@@ -258,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   }) // close event listener for keyup
 
-  // ----------- CODE THAT RUNS! ----------
+  // ----------- CODE THAT RUNS! ---------- //
 
   //console.log(activeShapeLocation)
   playGame() 
