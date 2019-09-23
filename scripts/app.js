@@ -199,18 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const potentialRotation = rotateFiveRight(activeShapeLocation)
         
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
-          console.log('oh no! move not possible!')
+          // console.log('oh no! move not possible!')
           lockCheck(activeShapeLocation)
         } else {
+          // reassign the shape key location so that the code works next time around
+          // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
           currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
           activeShapeLocation = potentialRotation
           lockCheck(activeShapeLocation)
         }
-        
-        // reassign the shape key location so that the code works next time around
-        // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
-        
-        
         
         
         // console.log('w was pressed')
