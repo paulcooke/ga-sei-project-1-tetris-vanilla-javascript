@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
             moveShape(activeShapeLocation, 'right')
             console.log('kicked right!')
+            console.log(cells[currentShape.centerIdx - 1].classList)
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
             moveShape(activeShapeLocation, 'left')
