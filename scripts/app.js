@@ -156,17 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- MOVEMENT & ROTATION FUNCTIONS ---------- //
 
-  function moveShape(arrayToMove, direction) {
+  function moveShape(arrayToMove, direction, distance) {
     clearShape(arrayToMove, 'active-shape')
     arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
-        case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= 1         // left 
+        case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= distance         // left 
           break
-        case 'up': if (upCheck(arrayToMove)) idx -= width               // up
+        case 'up': if (upCheck(arrayToMove)) idx -= (width * distance)               // up
           break
-        case 'right': if (rightCheck(arrayToMove, 0, 0)) idx += 1       // right
+        case 'right': if (rightCheck(arrayToMove, 0, 0)) idx += distance       // right
           break
-        case 'down': if (downCheck(arrayToMove)) idx += width           // down
+        case 'down': if (downCheck(arrayToMove)) idx += (width * distance)           // down
           break
       }
       return idx
@@ -215,29 +215,21 @@ document.addEventListener('DOMContentLoaded', () => {
     clearShape(arrayToRotate, 'active-shape')
     const potentialRotation = []
     if (iRotationPosition === 2) {
-      console.log(iRotationPosition)
-      console.log('attempting 2 to 3')
       for (let i = 0; i < arrayToRotate.length; i++) {
         potentialRotation.push(arrayToRotate[i] + i2To3[i])
       }
       tempIRotationPosition = 3
     } else if (iRotationPosition === 3) {
-      console.log(iRotationPosition)
-      console.log('attempting 3 to 4')
       for (let i = 0; i < arrayToRotate.length; i++) {
         potentialRotation.push(arrayToRotate[i] + i3To4[i])
       } 
       tempIRotationPosition = 4
     } else if (iRotationPosition === 4) {
-      console.log(iRotationPosition)
-      console.log('attempting 4 to 1')
       for (let i = 0; i < arrayToRotate.length; i++) {
         potentialRotation.push(arrayToRotate[i] + i4To1[i])
       }
       tempIRotationPosition = 1
     } else {
-      console.log(iRotationPosition)
-      console.log('attempting 1 to 2')
       for (let i = 0; i < arrayToRotate.length; i++) {
         potentialRotation.push(arrayToRotate[i] + i1To2[i])
       }
@@ -274,15 +266,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
           // console.log('oh no! move not possible!')
           console.log(potentialCenterIdx)
-          // cna we check if the index of the center is bigger than the index of the center of the potential rotation?
-          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
+          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block')  ???? how to wall kick off occupied blocks
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
-            moveShape(activeShapeLocation, 'right')
+            moveShape(activeShapeLocation, 'right', 1)
             // console.log('kicked right!')
             // console.log(cells[currentShape.centerIdx - 1].classList)
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
-            moveShape(activeShapeLocation, 'left')
+            moveShape(activeShapeLocation, 'left', 1)
             // console.log('kicked left!')
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           }
@@ -300,10 +291,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (currentShape.name === 'iShape') {
         const potentialRotation = rotateIRightCheck(activeShapeLocation)
-        rotateIRigthDo(activeShapeLocation, potentialRotation)
+        
+        if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
+          // console.log('oh no! move not possible!')
+          console.log(potentialCenterIdx)
+          // cna we check if the index of the center is bigger than the index of the center of the potential rotation?
+          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
+          if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
+            moveShape(activeShapeLocation, 'right', 1)
+            // console.log('kicked right!')
+            // console.log(cells[currentShape.centerIdx - 1].classList)
+            rotateIRigthDo(activeShapeLocation, potentialRotation)
+          } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
+            moveShape(activeShapeLocation, 'left', 1)
+            // console.log('kicked left!')
+            rotateIRigthDo(activeShapeLocation, potentialRotation)
+          }
+          lockCheck(activeShapeLocation)
+          console.log('centerid address', activeShapeLocation[currentShape.centerIdx])
+        } else {
+          rotateIRigthDo(activeShapeLocation, potentialRotation)
+        }
       }
     }
-
     
 
     // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
@@ -319,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         case 40: direction = 'down'
           break
       }
-      moveShape(activeShapeLocation, direction)
+      moveShape(activeShapeLocation, direction, 1)
       console.log('new shape location', activeShapeLocation)   
     }
 
