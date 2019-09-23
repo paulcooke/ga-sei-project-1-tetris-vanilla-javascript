@@ -53,13 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function makeShape() {
     // centerIdx properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapes = [ 
-      { name: 'tShape', shapeStartAddress: [20, 29, 30, 31], color: 'purple', centerIdx: 2 },
-      { name: 'zShape', shapeStartAddress: [19, 20, 30, 31], color: 'red', centerIdx: 2 },
-      { name: 'sShape', shapeStartAddress: [20, 21, 29, 30], color: 'green', centerIdx: 3 },
-      { name: 'jShape', shapeStartAddress: [19, 29, 30, 31], color: 'blue', centerIdx: 2 },
-      { name: 'lShape', shapeStartAddress: [21, 29, 30, 31], color: 'orange', centerIdx: 2 },
-      { name: 'iShape', shapeStartAddress: [29, 30, 31, 32], color: 'cyan', centerIdx: 1 },
-      { name: 'oShape', shapeStartAddress: [20, 21, 30, 31], color: 'rgb(243, 229, 79)', centerIdx: 1 }
+      { name: 'tShape', shapeStartAddress: [10, 19, 20, 21], color: 'purple', centerIdx: 2 },
+      { name: 'zShape', shapeStartAddress: [9, 10, 20, 21], color: 'red', centerIdx: 2 },
+      { name: 'sShape', shapeStartAddress: [10, 11, 19, 20], color: 'green', centerIdx: 3 },
+      { name: 'jShape', shapeStartAddress: [9, 19, 20, 21], color: 'blue', centerIdx: 2 },
+      { name: 'lShape', shapeStartAddress: [11, 19, 20, 21], color: 'orange', centerIdx: 2 },
+      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], color: 'cyan', centerIdx: 1 },
+      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], color: 'rgb(243, 229, 79)', centerIdx: 1 }
     ]
     const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
     currentShape = shapes[colorMatch]
@@ -151,24 +151,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- MOVEMENT & ROTATION FUNCTIONS ----------
 
-  function moveShape(array, direction) {
-    clearShape(array, 'active-shape')
-    array = array.map(idx => {        
+  function moveShape(arrayToMove, direction) {
+    clearShape(arrayToMove, 'active-shape')
+    arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
-        case 'left': if (leftCheck(array)) idx -= 1       // left 
+        case 'left': if (leftCheck(arrayToMove)) idx -= 1         // left 
           break
-        case 'up': if (upCheck(array)) idx -= width     // up
+        case 'up': if (upCheck(arrayToMove)) idx -= width         // up
           break
-        case 'right': if (rightCheck(array)) idx += 1      // right
+        case 'right': if (rightCheck(arrayToMove)) idx += 1       // right
           break
-        case 'down': if (downCheck(array)) idx += width   // down
+        case 'down': if (downCheck(arrayToMove)) idx += width     // down
           break
       }
       return idx
     })
-    lockCheck(array)
+    lockCheck(arrayToMove)
   }  
   
+  function rotateFiveRight(arrayToRotate) {
+    // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
+    const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
+    // the grid below is what we will use to map the future moves of the current shape to rotate it
+    const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
+    console.log('grid', rotateCheckGrid)
+    // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
+    clearShape(arrayToRotate, 'active-shape')
+    const potentialRotation = []
+    rotateCheckGrid.forEach(location => {
+      if (arrayToRotate.includes(location)) {
+        potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
+      }
+    })
+    console.log(potentialRotation)
+    // reassign the shape key location so that the code works next time around
+    // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
+    currentShape.centerIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
+    arrayToRotate = potentialRotation
+    lockCheck(arrayToRotate)
+    // console.log('w was pressed')
+    // console.log('current shape key:', currentShape.centerIdx, 'location:', currentShape.centerIdx)
+    // console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
+  }
 
   // ---------- EVENT LISTENERS ----------
 
@@ -178,28 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // rotation keys. 87 = 'w', for rotating right 90 degrees
     if (e.keyCode === 87) {
       if (fiveShapes.includes(currentShape.name)) {  
-        // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
-        const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
-        // the grid below is what we will use to map the future moves of the current shape to rotate it
-        const rotateCheckGrid = checkArrayGridMaker.map(instruction => activeShapeLocation[currentShape.centerIdx] - width - 1 + instruction)
-        console.log('grid', rotateCheckGrid)
-        // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
-        clearShape(activeShapeLocation, 'active-shape')
-        const potentialRotation = []
-        rotateCheckGrid.forEach(location => {
-          if (activeShapeLocation.includes(location)) {
-            potentialRotation.push(location + rotateRightInstructions[rotateCheckGrid.indexOf(location)])
-          }
-        })
-        console.log(potentialRotation)
-        // reassign the shape key location so that the code works next time around
-        // get the index in potentialRotation that holds the value that was at the index of the currentShape.centerIdx in activeShapeLocation
-        currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
-        activeShapeLocation = potentialRotation
-        lockCheck(activeShapeLocation)
-        // console.log('w was pressed')
-        // console.log('current shape key:', currentShape.centerIdx, 'location:', currentShape.centerIdx)
-        // console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
+        rotateFiveRight(activeShapeLocation)
       }
     }
 
