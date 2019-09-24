@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // check vairables
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
-  let gameOver = false
+  let gameOver = true
   let cellsToClear = []
   const rangeMaker = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step))
   
@@ -318,7 +318,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // start and pause
     if (e.keyCode === 32) {
-      spawnShape()
+      if (gameOver) {
+        spawnShape()
+        gameOver = false
+      }
     }
 
     // rotation keys. 87 = 'w', for rotating right 90 degrees
