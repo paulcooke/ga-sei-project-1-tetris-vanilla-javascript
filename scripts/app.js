@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cells = []
   const startLocation = 4
 
+  // scoring variables
+  let score
+  let lineClearCounter
+  // scoring matrix ??? 
+
   // check vairables
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
@@ -20,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // move variables
   const directionKeys = [37, 38, 39, 40]
   let direction
+  let tickDuration = 1000
   let timer
 
   // rotation variables
@@ -29,16 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let iRotationPosition
   let tempIRotationPosition
 
-  // experimental additions - new variables go here in testing and moved up once in use
-  // let tickLength = 1000
-
   // ---------- RUN GAME FUNCTIONS ---------- //
 
-  function playGame() {
-    makeBoard()
-    spawnShape()
-  }
   
+
   // ---------- GAME SETUP FUNCTIONS ---------- //
   
   // this function makes the game board using the sizes specified at the start
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     timer = setInterval(() => {
       clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, 'down', 1)
-    }, 1000)
+    }, tickDuration)
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
-      const startPoint = starterCellsArray[i][starterCellsArray[i].length - 1]
       const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
       console.log('trying for temp array', tempArray)
 
@@ -125,14 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  
-    
-    
-    
-    
-
-  
-
   // ---------- CHECK FUNCTIONS ---------- //
 
   function rightCheck(array, offsetLocation, offsetIdx) {
@@ -206,10 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cellsToClear.length > 0) {
         clearLinesAndTopUp(cellsToClear)
       }
-
-      // put if completed lines action in here?
-
-
       checkGameOver()
       if (gameOver) {
         clearInterval(timer)
@@ -329,6 +316,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // this is the keyup event listener that is waiting for control input and deciding what to do with it
   document.addEventListener('keyup', e => {
 
+    // start and pause
+    if (e.keyCode === 32) {
+      spawnShape()
+    }
+
     // rotation keys. 87 = 'w', for rotating right 90 degrees
     if (e.keyCode === 87) {
       if (fiveShapes.includes(currentShape.name)) {  
@@ -406,9 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    
-
-    
 
   }) // close event listener for keyup
   
@@ -429,12 +418,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('new shape location', activeShapeLocation)   
     }
   }) // close event listener for keydown
-  
 
   // ----------- CODE THAT RUNS! ---------- //
 
-  //console.log(activeShapeLocation)
-  playGame() 
+  makeBoard()
 
 }) // close DOM event listener
 
