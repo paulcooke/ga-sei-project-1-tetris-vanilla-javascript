@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
   let gameOver = false
+  let lineClearCounter
   
   // shape variables
   let activeShapeLocation = []
@@ -120,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function stackCheck(array) {
-    return array.some( cellIdx => {
+    return array.some(cellIdx => {
       return cells[cellIdx + 10].classList.contains('occupied-block')
     })
   }
@@ -134,6 +135,26 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOver = checkArray.some(idx => cells[idx].classList.contains('occupied-block'))
   }
 
+  function checkCompletedLines() {
+    const lineRange = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step))
+    const gridArrays = []
+    let deleteStartCells = []
+    // first make the array with the row arrays in
+    for (let i = 0; i < cells.length; i += 10) {
+      gridArrays.push(lineRange(i, i + width - 1, 1))
+    }
+    // console.log(gridArrays)
+    // then for each row, check if it's completed and return any that are to the deleteStartCells array
+    gridArrays.forEach(row => {
+      console.log('testing for row', row)
+      row.forEach(idx => console.log('testing for idx', cells[idx].classList))
+      if (row.every(idx => cells[idx].classList.contains('occupied-block'))) {
+        deleteStartCells.push(row[0])
+      }
+    })
+    console.log('testing for delete start cells', deleteStartCells)
+  }
+
   // lockCheck is a function because it's used in both move and rotation and is called by both
   function lockCheck(array) {
     // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
@@ -142,10 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // clearShape(array, 'active-shape') // not needed as there's a clear before the move attempt
       // redraw shape in same location but with new class 'occupied-block'
       drawShape(array, 'occupied-block')
+      checkCompletedLines()
       checkGameOver()
       if (gameOver) {
         alert('game over! you are not as good at tetris as Moni!')
       }
+
+      // put line clear check in an else if here?
+
       // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
       spawnShape()       
     } else {
@@ -330,6 +355,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 
+    
+
+  }) // close event listener for keyup
+  
+  document.addEventListener('keydown', e => {
     if (directionKeys.includes(e.keyCode)) {
       switch (e.keyCode) {
         case 37: direction = 'left' 
@@ -344,8 +374,8 @@ document.addEventListener('DOMContentLoaded', () => {
       moveShape(activeShapeLocation, direction, 1)
       console.log('new shape location', activeShapeLocation)   
     }
-
-  }) // close event listener for keyup
+  }) // close event listener for keydown
+  
 
   // ----------- CODE THAT RUNS! ---------- //
 
