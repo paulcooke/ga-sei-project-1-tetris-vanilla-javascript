@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // move variables
   const directionKeys = [37, 38, 39, 40]
   let direction
+  let timer
 
   // rotation variables
   const checkArrayGridMaker = [0, 1, 2, width, width + 1, width + 2, (2 * width), (2 * width) + 1, (2 * width) + 2]
@@ -74,12 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
     makeShape()
     if (currentShape.name === 'iShape') iRotationPosition = 1 
     console.log(iRotationPosition) // iRotationPosition used to id the position that the i is in
-    activeShapeLocation = currentShape.shapeStartAddress.map(x => {
-      cells[x + startLocation].classList.add('active-shape')
-      cells[x + startLocation].classList.add(currentShape.name)
-      console.log(currentShape.name)
-      return x + startLocation
+    activeShapeLocation = currentShape.shapeStartAddress.map(startShape => {
+      cells[startShape + startLocation].classList.add('active-shape')
+      cells[startShape + startLocation].classList.add(currentShape.name)
+      return startShape + startLocation
     })
+    timer = setInterval(() => {
+      clearShape(activeShapeLocation, 'active-shape', currentShape.name)
+      moveShape(activeShapeLocation, 'down', 1)
+    }, 1000)
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
@@ -208,11 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       checkGameOver()
       if (gameOver) {
+        clearInterval(timer)
         alert('game over! you are not as good at tetris as Moni!')
       }
 
       // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
-      spawnShape()       
+      clearInterval(timer)
+      if (!gameOver) spawnShape()       
     } else {
       drawShape(array, 'active-shape', currentShape.name)
       activeShapeLocation = array
