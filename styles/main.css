@@ -40,6 +40,34 @@ header {
   /* background-color: white */
 }
 
+.tShape {
+  background-color: purple;
+}
+     
+.zShape {
+  background-color: red;
+}
+
+.sShape {
+  background-color: green;
+}
+      
+.jShape {
+  background-color: blue;
+}
+
+.lShape {
+  background-color: orange;
+}
+
+.iShape {
+  background-color: cyan;
+}
+ 
+.oShape {
+  background-color: rgb(243, 229, 79);
+}
+
 h2, h4, p {
   text-align: center;
   margin: 10px 20px;
@@ -50,10 +78,13 @@ h2, h4, p {
 }
 */
 
-.occupied-block {
+/* .occupied-block {
   animation: flash 0.2s;
-}
+} */
 
+/* .cleared {
+  animation: flash 0.2s;
+} */
 
 /* took the flash animation from animate.css */
 @-webkit-keyframes flash {

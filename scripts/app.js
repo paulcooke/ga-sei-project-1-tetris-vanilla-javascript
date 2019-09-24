@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
   const gameOverRowStartCell = 30
   let gameOver = false
-  let lineClearCounter
+  let cellsToClear = []
+  const rangeMaker = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step))
   
   // shape variables
   let activeShapeLocation = []
@@ -47,9 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cells.push(cell)
     }
     for (let j = width * 3; j < width * 4; j++) {
-      cells[j].style.borderBottom = '1px solid grey'
-      // cells[j].style.backgroundColor = 'grey' - this doesn't work because it gets overwritten by the clear function once the shape moves
-      // maybe make background nul and put another div behind it?
+      cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
     }
   }
 
@@ -57,16 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function makeShape() {
     // centerIdx properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapes = [ 
-      { name: 'tShape', shapeStartAddress: [10, 19, 20, 21], color: 'purple', centerIdx: 2 },
-      { name: 'zShape', shapeStartAddress: [9, 10, 20, 21], color: 'red', centerIdx: 2 },
-      { name: 'sShape', shapeStartAddress: [10, 11, 19, 20], color: 'green', centerIdx: 3 },
-      { name: 'jShape', shapeStartAddress: [9, 19, 20, 21], color: 'blue', centerIdx: 2 },
-      { name: 'lShape', shapeStartAddress: [11, 19, 20, 21], color: 'orange', centerIdx: 2 },
-      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], color: 'cyan', centerIdx: 1 },
-      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], color: 'rgb(243, 229, 79)', centerIdx: 1 }
+      { name: 'tShape', shapeStartAddress: [10, 19, 20, 21], centerIdx: 2 },
+      { name: 'zShape', shapeStartAddress: [9, 10, 20, 21], centerIdx: 2 },
+      { name: 'sShape', shapeStartAddress: [10, 11, 19, 20], centerIdx: 3 },
+      { name: 'jShape', shapeStartAddress: [9, 19, 20, 21], centerIdx: 2 },
+      { name: 'lShape', shapeStartAddress: [11, 19, 20, 21], centerIdx: 2 },
+      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], centerIdx: 1 },
+      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], centerIdx: 1 }
     ]
-    const colorMatch = Math.floor(Math.random() * shapes.length) // this variable makes sure each block is always the correct color, instead of calling Math.random twice
-    currentShape = shapes[colorMatch]
+    currentShape = shapes[Math.floor(Math.random() * shapes.length)]
   } 
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
@@ -78,25 +76,58 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(iRotationPosition) // iRotationPosition used to id the position that the i is in
     activeShapeLocation = currentShape.shapeStartAddress.map(x => {
       cells[x + startLocation].classList.add('active-shape')
-      cells[x + startLocation].style.backgroundColor = currentShape.color
+      cells[x + startLocation].classList.add(currentShape.name)
+      console.log(currentShape.name)
       return x + startLocation
     })
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
-  function clearShape(shapeArrayOut, classToRemove) {
+  function clearShape(shapeArrayOut, classToRemove, class2, class3, class4, class5, class6, class7, class8) {
     shapeArrayOut.forEach(idx => {
       cells[idx].classList.remove(classToRemove)
-      cells[idx].style.backgroundColor = null // ??? how to get it to revert to listening to the css for styling?
+      cells[idx].classList.remove(class2)
+      cells[idx].classList.remove(class3)
+      cells[idx].classList.remove(class4)
+      cells[idx].classList.remove(class5)
+      cells[idx].classList.remove(class6)
+      cells[idx].classList.remove(class7)
+      cells[idx].classList.remove(class8)
     })
   }
 
-  function drawShape(shapeArrayIn, classToAdd) {
+  function drawShape(shapeArrayIn, classToAdd, secondClassToAdd) {
     shapeArrayIn.forEach(idx => {
       cells[idx].classList.add(classToAdd)
-      cells[idx].style.backgroundColor = currentShape.color
+      cells[idx].classList.add(secondClassToAdd)
     })
   }
+
+  function clearLinesAndTopUp(starterCellsArray) {
+    console.log(starterCellsArray)
+
+    for (let i = 0; i < starterCellsArray.length; i++) {
+      clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
+      const startPoint = starterCellsArray[i][starterCellsArray[i].length - 1]
+      const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
+      console.log('trying for temp array', tempArray)
+
+      tempArray.forEach(idx => {
+        const tempClassList = cells[idx - width].classList
+        console.log('what\'s in the tempClassList', tempClassList)
+        cells[idx].classList = tempClassList
+      })  
+      cellsToClear = []  
+    }
+  }
+  
+  
+    
+    
+    
+    
+
+  
 
   // ---------- CHECK FUNCTIONS ---------- //
 
@@ -136,23 +167,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function checkCompletedLines() {
-    const lineRange = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step))
+    // lineRange makes an array based on start and stop plus increment inputs. it's used to make the gridArrays array
     const gridArrays = []
-    let deleteStartCells = []
-    // first make the array with the row arrays in
+    // make the array with the row arrays in (gridArrays)
     for (let i = 0; i < cells.length; i += 10) {
-      gridArrays.push(lineRange(i, i + width - 1, 1))
+      gridArrays.push(rangeMaker(i, i + width - 1, 1))
     }
     // console.log(gridArrays)
-    // then for each row, check if it's completed and return any that are to the deleteStartCells array
+    // for each row, check if it's completed and return any that are to the cellsToClear array, these will get used for the splice to delete rows
     gridArrays.forEach(row => {
-      console.log('testing for row', row)
-      row.forEach(idx => console.log('testing for idx', cells[idx].classList))
+      // console.log('testing for row', row)
+      // row.forEach(idx => console.log('testing for idx', cells[idx].classList))
       if (row.every(idx => cells[idx].classList.contains('occupied-block'))) {
-        deleteStartCells.push(row[0])
+        cellsToClear.push(row)
       }
     })
-    console.log('testing for delete start cells', deleteStartCells)
+    // console.log('testing for delete start cells', cellsToClear)
+    lineClearCounter = cellsToClear.length
+    // if (lineClearCounter > 0) return true  ??? not sure if i need this to trigger the clear lines and top up function
+    // console.log('line clear counter', lineClearCounter)
   }
 
   // lockCheck is a function because it's used in both move and rotation and is called by both
@@ -160,21 +193,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
     if (checkLastRow(array) === true || stackCheck(array) === true) {
       // remove class 'active-shape'
-      // clearShape(array, 'active-shape') // not needed as there's a clear before the move attempt
       // redraw shape in same location but with new class 'occupied-block'
-      drawShape(array, 'occupied-block')
+      drawShape(array, 'occupied-block', currentShape.name)
+      // if (checkCompletedLines()) {
+      //   clearLinesAndTopUp(cellsToClear)
+      // }
       checkCompletedLines()
+      if (cellsToClear.length > 0) {
+        clearLinesAndTopUp(cellsToClear)
+      }
+
+      // put if completed lines action in here?
+
+
       checkGameOver()
       if (gameOver) {
         alert('game over! you are not as good at tetris as Moni!')
       }
 
-      // put line clear check in an else if here?
-
       // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
       spawnShape()       
     } else {
-      drawShape(array, 'active-shape')
+      drawShape(array, 'active-shape', currentShape.name)
       activeShapeLocation = array
     }
   }
@@ -184,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // movement check logic. doesn't actually do the move, that is done by calling lockCheck() before closing the if statement
   // asks if all moves are possible before attempting any at all
   function moveShape(arrayToMove, direction, distance) {
-    clearShape(arrayToMove, 'active-shape')
     arrayToMove = arrayToMove.map(idx => {        
       switch (direction) {
         case 'left': if (leftCheck(arrayToMove, 0, 0)) idx -= distance         // left 
@@ -209,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
     console.log('grid', rotateCheckGrid)
     // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
-    clearShape(arrayToRotate, 'active-shape')
+    clearShape(arrayToRotate, 'active-shape', currentShape.name)
     const potentialRotation = []
     rotateCheckGrid.forEach(idx => {
       if (arrayToRotate.includes(idx)) {
@@ -239,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const i3To4 = [- width + 2, 1, width, (2 * width) - 1]
     const i4To1 = [(2 * width) - 2, width - 1, 0, - width + 1]
 
-    clearShape(arrayToRotate, 'active-shape')
+    clearShape(arrayToRotate, 'active-shape', currentShape.name)
     const potentialRotation = []
     if (iRotationPosition === 2) {
       for (let i = 0; i < arrayToRotate.length; i++) {
@@ -295,11 +334,13 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log(potentialCenterIdx)
           // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block')  ???? how to wall kick off occupied blocks
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
+            clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'right', 1)
             // console.log('kicked right!')
             // console.log(cells[currentShape.centerIdx - 1].classList)
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
+            clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'left', 1)
             // console.log('kicked left!')
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
@@ -325,24 +366,30 @@ document.addEventListener('DOMContentLoaded', () => {
           // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
             if (iRotationPosition === 4) {
+              clearShape(activeShapeLocation, 'active-shape', currentShape.name)
               moveShape(activeShapeLocation, 'right', 2)
               rotateIRigthDo(activeShapeLocation, potentialRotation)  
             } else {     
+              clearShape(activeShapeLocation, 'active-shape', currentShape.name)
               moveShape(activeShapeLocation, 'right', 1)
               rotateIRigthDo(activeShapeLocation, potentialRotation)
             }
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 1 && iRotationPosition === 4) {
+            clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'right', 1)
             rotateIRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
             if (iRotationPosition === 2) {
+              clearShape(activeShapeLocation, 'active-shape', currentShape.name)
               moveShape(activeShapeLocation, 'left', 2)
               rotateIRigthDo(activeShapeLocation, potentialRotation)
             } else {
+              clearShape(activeShapeLocation, 'active-shape', currentShape.name)
               moveShape(activeShapeLocation, 'left', 1)
               rotateIRigthDo(activeShapeLocation, potentialRotation)
             }           
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 8 && iRotationPosition === 2) {
+            clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'left', 1)
             rotateIRigthDo(activeShapeLocation, potentialRotation)
           }
@@ -371,6 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         case 40: direction = 'down'
           break
       }
+      clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, direction, 1)
       console.log('new shape location', activeShapeLocation)   
     }
