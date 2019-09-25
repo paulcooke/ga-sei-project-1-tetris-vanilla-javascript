@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // shape variables
   let holdingShape = {}
-  let holdingShapeLocation = []
   let currentShape = {}
   let activeShapeLocation = []
   
@@ -45,10 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let potentialCenterIdx
   let iRotationPosition
   let tempIRotationPosition
-
-  // ---------- RUN GAME FUNCTIONS ---------- //
-
-  
 
   // ---------- GAME SETUP FUNCTIONS ---------- //
   
@@ -74,12 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // centerIdx properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapes = [ 
       { name: 'tShape', shapeStartAddress: [0, 9, 10, 11], centerIdx: 2, holdingAddress: [0, 3, 4, 5] },
-      { name: 'zShape', shapeStartAddress: [-1, 0, 10, 11], centerIdx: 2, holdingAddress: [-1, 0, 4, 5]  },
-      { name: 'sShape', shapeStartAddress: [0, 1, 9, 10], centerIdx: 3, holdingAddress: [0, 1, 3, 4]  },
-      { name: 'jShape', shapeStartAddress: [-1, 9, 10, 11], centerIdx: 2, holdingAddress: [-1, 3, 4, 5]  },
-      { name: 'lShape', shapeStartAddress: [1, 9, 10, 11], centerIdx: 2, holdingAddress: [1, 3, 4, 5]  },
-      { name: 'iShape', shapeStartAddress: [9, 10, 11, 12], centerIdx: 1, holdingAddress: [3, 4, 5, 6]  },
-      { name: 'oShape', shapeStartAddress: [0, 1, 10, 11], centerIdx: 1, holdingAddress: [0, 1, 4, 5]  }
+      { name: 'zShape', shapeStartAddress: [-1, 0, 10, 11], centerIdx: 2, holdingAddress: [-1, 0, 4, 5] },
+      { name: 'sShape', shapeStartAddress: [0, 1, 9, 10], centerIdx: 3, holdingAddress: [0, 1, 3, 4] },
+      { name: 'jShape', shapeStartAddress: [-1, 9, 10, 11], centerIdx: 2, holdingAddress: [-1, 3, 4, 5] },
+      { name: 'lShape', shapeStartAddress: [1, 9, 10, 11], centerIdx: 2, holdingAddress: [1, 3, 4, 5] },
+      { name: 'iShape', shapeStartAddress: [9, 10, 11, 12], centerIdx: 1, holdingAddress: [3, 4, 5, 6] },
+      { name: 'oShape', shapeStartAddress: [0, 1, 10, 11], centerIdx: 1, holdingAddress: [0, 1, 4, 5] }
     ]
     holdingShape = shapes[Math.floor(Math.random() * shapes.length)]
   } 
@@ -96,11 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
 
+  // make a random shape and put it in the holding ('next shape') area
   function getRandomShape() {
     littleCells.forEach(lilCell => lilCell.classList.remove('tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape'))
     // littleCells.classList.remove(classToRemove)
     makeShape()
-    holdingShapeLocation = holdingShape.holdingAddress.map(shape => {
+    holdingShape.holdingAddress.forEach(shape => {
       littleCells[shape + holdingLocation].classList.add(holdingShape.name)
       return shape + holdingLocation
     })
@@ -122,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
       clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, 'down', 1)
     }, levelSpeeds[currentLevel.innerHTML])
-    
     getRandomShape()
   }
 
@@ -177,12 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
       currentLevel.innerHTML = 9
     }
     
-    
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
       const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
-      console.log('trying for temp array', tempArray)
-
       tempArray.forEach(idx => {
         cells[idx].classList = cells[idx - width].classList
       })  
@@ -234,10 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < cells.length; i += 10) {
       gridArrays.push(rangeMaker(i, i + width - 1, 1))
     }
-    // console.log(gridArrays)
     // for each row, check if it's completed and return any that are to the cellsToClear array, these will get to clear rows
     gridArrays.forEach(row => {
-      // console.log('testing for row', row)
       // row.forEach(idx => console.log('testing for idx', cells[idx].classList))
       if (row.every(idx => cells[idx].classList.contains('occupied-block'))) {
         cellsToClear.push(row)
@@ -246,33 +236,25 @@ document.addEventListener('DOMContentLoaded', () => {
     lineClearCounter = cellsToClear.length
   }
 
-  // lockCheck is a function because it's used in both move and rotation and is called by both
+  // lockCheck is the 'finishing move' for move and rotation attempts
   function lockCheck(array) {
-    // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
-    
-    if (checkLastRow(array) === true || stackCheck(array) === true) {
-      // remove class 'active-shape'
-      // redraw shape in same location but with new class 'occupied-block'
-      clearInterval(timer)
+    if (checkLastRow(array) === true || stackCheck(array) === true) {      
+      
+      // give it one tick
+      // if it's really locked, then do the locked stuff, otherwise do the not locked stuff
+      // need to check again the above lock checks
 
 
-      // setTimeout(() => , tickDuration)  ??? put it in settimout like before but clearinterval first?
       drawShape(array, 'occupied-block', currentShape.name)
-      // if (checkCompletedLines()) {
-      //   clearLinesAndTopUp(cellsToClear)
-      // }
+      clearInterval(timer)
       checkCompletedLines()
       if (cellsToClear.length > 0) {
         clearLinesAndTopUp(cellsToClear)
       }
       checkGameOver()
       if (gameOver) {
-        // alert('game over! you are not as good at tetris as Moni!')
         gameOverScreen()
       }
-
-      // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
-      clearInterval(timer)
       if (!gameOver) spawnShape()       
     } else {
       drawShape(array, 'active-shape', currentShape.name)
@@ -299,6 +281,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return idx
     })
     lockCheck(arrayToMove)
+
+    // thouht this was where to put the lock delay
+    // if (checkLastRow(arrayToMove) === true || stackCheck(arrayToMove) === true) {
+    //   setInterval(() => {
+    //     lockCheck(arrayToMove)
+    //   }, levelSpeeds[currentLevel.innerHTML])
+    // } else {
+    //   lockCheck(arrayToMove)
+    // }
   }  
   
   // return the *POSSIBLEe* final position after rotating right 90 degrees
