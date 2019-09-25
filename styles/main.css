@@ -32,6 +32,10 @@ header {
   max-width: 200px;
 }
 
+#gameOver {
+  display: hidden;
+}
+
 .grid div {
   border: 1px solid rgb(226, 224, 224);
   flex-grow: 1;
@@ -86,14 +90,20 @@ h2, h4, p {
   animation: flash 0.2s;
 } */
 
+.gameOverScreen {
+  background-color: grey;
+  animation: shake 0.4s;
+}
+
 /* took the flash animation from animate.css */
 @-webkit-keyframes flash {
   from,
-  1%,
+  50%,
   to {
     opacity: 1;
   }
 
+  25%,
   75% {
     opacity: 0;
   }
@@ -101,11 +111,12 @@ h2, h4, p {
 
 @keyframes flash {
   from,
-  1%,
+  50%,
   to {
     opacity: 1;
   }
 
+  25%,
   75% {
     opacity: 0;
   }
@@ -116,3 +127,58 @@ h2, h4, p {
   animation-name: flash;
 }
 
+
+@-webkit-keyframes shake {
+  from,
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+@keyframes shake {
+  from,
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: translate3d(-10px, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+.shake {
+  -webkit-animation-name: shake;
+  animation-name: shake;
+}

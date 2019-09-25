@@ -74,6 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
     currentShape = shapes[Math.floor(Math.random() * shapes.length)]
   } 
 
+  function gameOverScreen() {
+    cells.forEach(cell => cell.classList.add('gameOverScreen'))
+  }
+
   function resetStuff() {
     displayedTotalLines.innerHTML = 0
     displayedScore.innerHTML = 0
@@ -239,8 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       checkGameOver()
       if (gameOver) {
-        clearInterval(timer)
-        alert('game over! you are not as good at tetris as Moni!')
+        // alert('game over! you are not as good at tetris as Moni!')
+        gameOverScreen()
       }
 
       // spawn a new shape, which makes all the controls apply to the new one and leaves the old (now 'occupied') one locked
