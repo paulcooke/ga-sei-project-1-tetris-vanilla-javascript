@@ -48,8 +48,8 @@ header {
   flex-wrap: wrap;
   /* height: 50%; */
   justify-content: center;
-  max-height: 120px;
-  max-width: 120px;
+  max-height: 80px;
+  max-width: 80px;
 }
 
 .grid div, .littleGrid div {

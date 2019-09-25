@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = 10
   const height = 24
   const grid = document.querySelector('.grid')
-  const littleGrid = document.querySelector('.littleGrid')
   const cells = []
-  const startLocation = 4
+  const littleGrid = document.querySelector('.littleGrid')
+  const littleCells = []
+  const startLocation = 14
+  const holdingLocation = 5
 
-  // scoring variables
+  // scoring variable1s
   const displayedScore = document.querySelector('#currentScore')
   
   const lineClearPoints = { 1: 100, 2: 300, 3: 500, 4: 800 }
@@ -27,8 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const rangeMaker = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step))
   
   // shape variables
-  let activeShapeLocation = []
+  let holdingShape = {}
+  let holdingShapeLocation = []
   let currentShape = {}
+  let activeShapeLocation = []
   
   // move variables
   const directionKeys = [37, 38, 39, 40]
@@ -58,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let j = width * 3; j < width * 4; j++) {
       cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
     }
-    for (let i = 0; i < 36; i++) {
+    for (let i = 0; i < 16; i++) {
       const littleCell = document.createElement('div')
       littleGrid.appendChild(littleCell)
-      cells.push(littleCell)
+      littleCells.push(littleCell)
     }
   }
 
@@ -69,15 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function makeShape() {
     // centerIdx properties will let us map a 3x3 grid around each shape when we try to rotate them. they line up with the shapes array
     const shapes = [ 
-      { name: 'tShape', shapeStartAddress: [10, 19, 20, 21], centerIdx: 2 },
-      { name: 'zShape', shapeStartAddress: [9, 10, 20, 21], centerIdx: 2 },
-      { name: 'sShape', shapeStartAddress: [10, 11, 19, 20], centerIdx: 3 },
-      { name: 'jShape', shapeStartAddress: [9, 19, 20, 21], centerIdx: 2 },
-      { name: 'lShape', shapeStartAddress: [11, 19, 20, 21], centerIdx: 2 },
-      { name: 'iShape', shapeStartAddress: [19, 20, 21, 22], centerIdx: 1 },
-      { name: 'oShape', shapeStartAddress: [10, 11, 20, 21], centerIdx: 1 }
+      { name: 'tShape', shapeStartAddress: [0, 9, 10, 11], centerIdx: 2, holdingAddress: [0, 3, 4, 5] },
+      { name: 'zShape', shapeStartAddress: [-1, 0, 10, 11], centerIdx: 2, holdingAddress: [-1, 0, 4, 5]  },
+      { name: 'sShape', shapeStartAddress: [0, 1, 9, 10], centerIdx: 3, holdingAddress: [0, 1, 3, 4]  },
+      { name: 'jShape', shapeStartAddress: [-1, 9, 10, 11], centerIdx: 2, holdingAddress: [-1, 3, 4, 5]  },
+      { name: 'lShape', shapeStartAddress: [1, 9, 10, 11], centerIdx: 2, holdingAddress: [1, 3, 4, 5]  },
+      { name: 'iShape', shapeStartAddress: [9, 10, 11, 12], centerIdx: 1, holdingAddress: [3, 4, 5, 6]  },
+      { name: 'oShape', shapeStartAddress: [0, 1, 10, 11], centerIdx: 1, holdingAddress: [0, 1, 4, 5]  }
     ]
-    currentShape = shapes[Math.floor(Math.random() * shapes.length)]
+    holdingShape = shapes[Math.floor(Math.random() * shapes.length)]
   } 
 
   function gameOverScreen() {
@@ -92,9 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
 
-  // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
-  function spawnShape () {
+  function getRandomShape() {
+    littleCells.forEach(lilCell => lilCell.classList.remove('tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape'))
+    // littleCells.classList.remove(classToRemove)
     makeShape()
+    holdingShapeLocation = holdingShape.holdingAddress.map(shape => {
+      littleCells[shape + holdingLocation].classList.add(holdingShape.name)
+      return shape + holdingLocation
+    })
+  }
+  
+  //this function spawns a new shape at the top of the board, at index contained in global variable 'startLocation'
+  function spawnShape () {
+    currentShape = holdingShape
+    console.log(holdingShape)
+    // console.log(currentShape)
     if (currentShape.name === 'iShape') iRotationPosition = 1 
     console.log(iRotationPosition) // iRotationPosition used to id the position that the i is in
     activeShapeLocation = currentShape.shapeStartAddress.map(startShape => {
@@ -106,6 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
       clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, 'down', 1)
     }, levelSpeeds[currentLevel.innerHTML])
+    
+    getRandomShape()
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
@@ -476,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   makeBoard()
   resetStuff()
+  getRandomShape()
 
 }) // close DOM event listener
 
