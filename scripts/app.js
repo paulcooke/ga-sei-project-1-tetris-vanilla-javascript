@@ -7,9 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const startLocation = 4
 
   // scoring variables
-  let score
+  // let runningScore = 0
+  // const displayedScore = document.querySelector('#currentScore')
+  // displayedScore.innerHTML = runningScore
   let lineClearCounter
-  // scoring matrix ??? 
+  const displayedTotalLines = document.querySelector('#totalLinesCleared')
+
+
+  let level = 0
+  const currentLevel = document.querySelector('#currentLevel')
+  currentLevel.innerHTML = level
 
   // check vairables
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
@@ -25,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // move variables
   const directionKeys = [37, 38, 39, 40]
   let direction
-  let tickDuration = 1000
+  let tickDuration = 500
   let timer
 
   // rotation variables
@@ -68,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     currentShape = shapes[Math.floor(Math.random() * shapes.length)]
   } 
 
+  function resetStuff() {
+    displayedTotalLines.innerHTML = 0
+  }
+
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
 
   // this function spawns a new shape at the top of the board, at index contaied in global variable 'startLocation'
@@ -109,16 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function clearLinesAndTopUp(starterCellsArray) {
     console.log(starterCellsArray)
-
+    displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
       const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
       console.log('trying for temp array', tempArray)
 
       tempArray.forEach(idx => {
-        const tempClassList = cells[idx - width].classList
-        console.log('what\'s in the tempClassList', tempClassList)
-        cells[idx].classList = tempClassList
+        cells[idx].classList = cells[idx - width].classList
       })  
       cellsToClear = []  
     }
@@ -169,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gridArrays.push(rangeMaker(i, i + width - 1, 1))
     }
     // console.log(gridArrays)
-    // for each row, check if it's completed and return any that are to the cellsToClear array, these will get used for the splice to delete rows
+    // for each row, check if it's completed and return any that are to the cellsToClear array, these will get to clear rows
     gridArrays.forEach(row => {
       // console.log('testing for row', row)
       // row.forEach(idx => console.log('testing for idx', cells[idx].classList))
@@ -177,18 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cellsToClear.push(row)
       }
     })
-    // console.log('testing for delete start cells', cellsToClear)
     lineClearCounter = cellsToClear.length
-    // if (lineClearCounter > 0) return true  ??? not sure if i need this to trigger the clear lines and top up function
-    // console.log('line clear counter', lineClearCounter)
   }
 
   // lockCheck is a function because it's used in both move and rotation and is called by both
   function lockCheck(array) {
     // the first part of the below checks if any of the shape is on the last row, and then stops it and flashes it to let the user know that it's locked. then it spawns another shape
+    
     if (checkLastRow(array) === true || stackCheck(array) === true) {
       // remove class 'active-shape'
       // redraw shape in same location but with new class 'occupied-block'
+      clearInterval(timer)
+
+
+      // setTimeout(() => , tickDuration)  ??? put it in settimout like before but clearinterval first?
       drawShape(array, 'occupied-block', currentShape.name)
       // if (checkCompletedLines()) {
       //   clearLinesAndTopUp(cellsToClear)
@@ -425,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------- CODE THAT RUNS! ---------- //
 
   makeBoard()
+  resetStuff()
 
 }) // close DOM event listener
 
