@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = 10
   const height = 24
   const grid = document.querySelector('.grid')
+  const littleGrid = document.querySelector('.littleGrid')
   const cells = []
   const startLocation = 4
 
@@ -56,6 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     for (let j = width * 3; j < width * 4; j++) {
       cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
+    }
+    for (let i = 0; i < 36; i++) {
+      const littleCell = document.createElement('div')
+      littleGrid.appendChild(littleCell)
+      cells.push(littleCell)
     }
   }
 

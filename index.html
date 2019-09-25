@@ -1,24 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Project 1</title>
   <script src="scripts/app.js"></script>
+  <link rel="stylesheet" href="styles/normalize.css">
   <link rel="stylesheet" href="styles/main.css">
 </head>
+
 <body>
-  <header>TETRIS</header>
+  <header></header>
+
+  <div class="gameBoardWrapper">
     <div class="grid"></div>
-    <div id="gameOver">GAME OVER :(</div>
-     <div class="instructions">
-    <h2>Press space to start</h2>
-    <p>Use the arrows to move</p>
-    <p>Press w to rotate clockwise</p>
-    <div class="currentScore">Current score: <span id="currentScore"></span></div>
-    <div class="totalLinesCleared">Total lines cleared: <span id="totalLinesCleared"></span></div>
-    <div class="currentLevel">Current level: <span id="currentLevel"></span></div>
+    <!-- <div class="pressStart">
+          <h2>TETRIS</h2>
+          <p>press space to play</p>
+        </div> -->
+    <!-- <div id="gameOver">GAME OVER :(</div> -->
+
+    <div class="infoPanel">
+      <div class="littleGrid"></div>
+      <div class="currentScore">Current score: <span id="currentScore"></span></div>
+      <div class="totalLinesCleared">Total lines cleared: <span id="totalLinesCleared"></span></div>
+      <div class="currentLevel">Current level: <span id="currentLevel"></span></div>
+      <div class="instructions">
+        <h2>Press space to start</h2>
+        <p>Use the arrows to move</p>
+        <p>Press w to rotate clockwise</p>
+      </div>
     </div>
+
+
+  </div>
+
+
+
+
 </body>
+
 </html>
