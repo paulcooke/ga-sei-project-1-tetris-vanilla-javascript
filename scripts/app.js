@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const lineClearPoints = { 1: 100, 2: 300, 3: 500, 4: 800 }
   let lineClearCounter
   const displayedTotalLines = document.querySelector('#totalLinesCleared')
+  const levelMultipliers = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10 } // for points
 
-
-  let level = 0
   const currentLevel = document.querySelector('#currentLevel')
-  currentLevel.innerHTML = level
+  currentLevel.innerHTML = 0
+  const levelSpeeds = { 0: 600, 1: 550, 2: 500, 3: 450, 4: 400, 5: 350, 6: 300, 7: 250, 8: 200, 9: 150 }
 
   // check vairables
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // move variables
   const directionKeys = [37, 38, 39, 40]
   let direction
-  let tickDuration = 500
   let timer
 
   // rotation variables
@@ -76,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } 
 
   function resetStuff() {
-    tickDuration = 500
     displayedTotalLines.innerHTML = 0
     displayedScore.innerHTML = 0
+    currentLevel.innerHTML = 0
   }
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
@@ -96,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     timer = setInterval(() => {
       clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, 'down', 1)
-    }, tickDuration)
+    }, levelSpeeds[currentLevel.innerHTML])
   }
 
   // this function removes the class 'active-shape' from the divs currently in the active shape location
@@ -124,8 +123,32 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(starterCellsArray)
     displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
     
-    const lineScore = lineClearPoints[lineClearCounter] // * level
+    const lineScore = lineClearPoints[lineClearCounter] * levelMultipliers[parseInt(currentLevel.innerHTML)]
     displayedScore.innerHTML = parseInt(displayedScore.innerHTML) + lineScore
+
+    const lineCheck = parseInt(displayedTotalLines.innerHTML)
+    if (lineCheck < 2) {
+      currentLevel.innerHTML = 0
+    } else if (lineCheck < 4) {
+      currentLevel.innerHTML = 1
+    } else if (lineCheck < 6) {
+      currentLevel.innerHTML = 2
+    } else if (lineCheck < 8) {
+      currentLevel.innerHTML = 3
+    } else if (lineCheck < 10) {
+      currentLevel.innerHTML = 4
+    } else if (lineCheck < 12) {
+      currentLevel.innerHTML = 5
+    } else if (lineCheck < 14) {
+      currentLevel.innerHTML = 6
+    } else if (lineCheck < 16) {
+      currentLevel.innerHTML = 7
+    } else if (lineCheck < 18) {
+      currentLevel.innerHTML = 8
+    } else {
+      currentLevel.innerHTML = 9
+    }
+    
     
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
