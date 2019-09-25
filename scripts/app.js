@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const startLocation = 4
 
   // scoring variables
-  // let runningScore = 0
-  // const displayedScore = document.querySelector('#currentScore')
-  // displayedScore.innerHTML = runningScore
+  const displayedScore = document.querySelector('#currentScore')
+  
+  const lineClearPoints = { 1: 100, 2: 300, 3: 500, 4: 800 }
   let lineClearCounter
   const displayedTotalLines = document.querySelector('#totalLinesCleared')
 
@@ -76,7 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } 
 
   function resetStuff() {
+    tickDuration = 500
     displayedTotalLines.innerHTML = 0
+    displayedScore.innerHTML = 0
   }
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
@@ -121,6 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearLinesAndTopUp(starterCellsArray) {
     console.log(starterCellsArray)
     displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
+    
+    const lineScore = lineClearPoints[lineClearCounter] // * level
+    displayedScore.innerHTML = parseInt(displayedScore.innerHTML) + lineScore
+    
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
       const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
