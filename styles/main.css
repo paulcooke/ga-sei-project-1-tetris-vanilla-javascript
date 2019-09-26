@@ -3,26 +3,34 @@
 }
 
 body {
+  font-family: 'Press Start 2P', cursive;
   align-items: center;
   display: flex;
+  flex-direction: column;
   /* flex-direction: column; */
-  height: 100vh;
+  /* height: 100vh; */
   justify-content: center;
   margin: auto;
-  /* background-color: rgb(187, 183, 183); */
+  background-color: #010153;
 }
 
 header {
-  
+  margin: 30px 0;
 }
 
 .gameBoardWrapper {
   display: flex;
+  padding: 4px;
   justify-items: space-between;
+  /* background-color: rgb(183, 183, 210); */
+  box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.4);
 }
 
 .leaderboard {
-  background-color: azure;
+  display: none;
+  background-image: linear-gradient(to bottom, rgb(74, 74, 155), rgb(1, 1, 83));
+  padding: 20px;
+  border-right: 2px solid rgb(74, 74, 155);
 }
 
 .leaderListItem li {
@@ -34,26 +42,30 @@ header {
   justify-content: space between;
 }
 
-.infoPanel {
-  background-color: azure;
-}
-
-.controls {
-  
-}
-
 .grid {
   align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.2); */
   display: flex;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   flex-wrap: wrap;
   /* height: 50%; */
   justify-content: center;
-  max-height: 480px;
-  max-width: 200px;
+  max-height: 720px;
+  max-width: 300px;
   position: relative;
-  /* background-color: rgb(187, 183, 183); */
+  background-image: linear-gradient(to bottom, rgb(74, 74, 155), rgb(1, 1, 83))
+}
+
+.grid div {
+  /* border: 1px solid rgb(226, 224, 224); */
+  flex-grow: 1;
+  height: 30px;
+  width: 30px;
+  /* background-color: white */
+}
+
+.top-section {
+/* background-color: azure; */
 }
 
 #gameOver {
@@ -80,55 +92,125 @@ header {
 
 .littleGrid {
   align-items: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2); */
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
   /* height: 50%; */
   justify-content: center;
-  max-height: 80px;
-  max-width: 80px;
+  max-height: 120px;
+  max-width: 120px;
+  /* background-color: rgb(1, 1, 83) */
 }
 
-.grid div, .littleGrid div {
-  border: 1px solid rgb(226, 224, 224);
+.littleGrid div {
+  /* border: 1px solid rgb(226, 224, 224); */
   flex-grow: 1;
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   /* background-color: white */
 }
 
+.infoPanel {
+  background-image: linear-gradient(to bottom, #4a4a9b, rgb(1, 1, 83));
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border-left: 2px solid rgb(74, 74, 155);
+  max-width: 300px;
+}
+
+.currentScore, .currentLevel, .totalLinesCleared {
+  width: 240px;
+  height: 90px;
+  border: 2px solid rgb(74, 74, 155);
+  background-color: rgb(1, 1, 83);
+  color: #9292c9;
+}
+
+.currentScore h4 {
+  font-size: 16px;
+}
+
+#currentScore {
+  display: flex;
+  align-items: center;
+  height: 60%;
+  justify-content: flex-end;
+  font-size: 24px;
+}
+
+#currentLevel {
+  font-size: 64px;
+  text-align: right;
+}
+
+#totalLinesCleared {
+  font-size: 54px;
+  text-align: right;
+}
+
+.currentLevel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.currentLevel h4 {
+  font-size: 38px;
+}
+
+.totalLinesCleared h4 {
+  font-size: 16px;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+.instructions {
+  width: 80%;
+  font-size: 16px;
+  color: #9292c9;
+}
+
+
+
 .tShape {
-  background-color: purple;
+  background-color: rgb(68, 21, 143);
+  border: 1px solid rgb(220, 219, 219);
 }
      
 .zShape {
-  background-color: red;
+  background-color: rgb(159, 21, 21);
+  border: 1px solid rgb(220, 219, 219);
 }
 
 .sShape {
-  background-color: green;
+  background-color: rgb(35, 82, 35);
+  border: 1px solid rgb(220, 219, 219);
 }
       
 .jShape {
-  background-color: blue;
+  background-color: rgb(37, 37, 143);
+  border: 1px solid rgb(220, 219, 219);
 }
 
 .lShape {
-  background-color: orange;
+  background-color: rgb(167, 119, 30);
+  border: 1px solid rgb(220, 219, 219);
 }
 
 .iShape {
-  background-color: cyan;
+  background-color: rgb(19, 124, 124);
+  border: 1px solid rgb(220, 219, 219);
 }
  
 .oShape {
-  background-color: rgb(243, 229, 79);
-}
-
-h2, h3, h4, p {
-  text-align: center;
-  margin: 0
+  background-color: rgb(184, 173, 50);
+  border: 1px solid rgb(220, 219, 219);
 }
 
 #span1 {

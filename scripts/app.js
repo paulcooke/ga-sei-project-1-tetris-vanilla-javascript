@@ -58,10 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.appendChild(cell)
       cells.push(cell)
     }
-    for (let j = width * 3; j < width * 4; j++) {
-      cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
+    for (let j = 0; j < width * 4; j++) {
+      cells[j].classList.add('top-section')
+      // cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
     }
-    for (let i = 0; i < 16; i++) {
+    for (let k = 0; k < 16; k++) {
       const littleCell = document.createElement('div')
       littleGrid.appendChild(littleCell)
       littleCells.push(littleCell)

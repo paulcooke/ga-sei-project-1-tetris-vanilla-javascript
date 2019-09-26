@@ -9,13 +9,19 @@
   <script src="scripts/app.js"></script>
   <link rel="stylesheet" href="styles/normalize.css">
   <link rel="stylesheet" href="styles/animate.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
 
 <body>
-  <header></header>
+  <header>
+    <div class="logo">
+      <img src="assets/Tetris .svg" alt="The Tetris logo">
+    </div>
+  </header>
 
   <div class="gameBoardWrapper">
+   
     <div class="leaderboard">
       <h3>HIGH SCORES</h3>
       <ol id="leaderBoardList"></ol>
@@ -51,13 +57,23 @@
 
     <div class="infoPanel">
       <div class="littleGrid"></div>
-      <div class="currentScore">Current score: <span id="currentScore"></span></div>
-      <div class="totalLinesCleared">Total lines cleared: <span id="totalLinesCleared"></span></div>
-      <div class="currentLevel">Current level: <span id="currentLevel"></span></div>
+      <div class="currentScore">
+        <h4>SCORE</h4> 
+        <div id="currentScore"></div>
+      </div>
+      <div class="totalLinesCleared">
+        <h4>LINES</h4> 
+        <div id="totalLinesCleared"></div>
+      </div>
+      <div class="currentLevel">
+        <h4>LVL</h4>
+        <div id="currentLevel"></div>
+      </div>
+
       <div class="instructions">
-        <h2>Press space to start</h2>
-        <p>Use the arrows to move</p>
-        <p>Press w to rotate clockwise</p>
+        <p>START: SPACE</p>
+        <p>MOVE: ARROWS</p>
+        <p>ROTATE: W</p>
       </div>
 
 
