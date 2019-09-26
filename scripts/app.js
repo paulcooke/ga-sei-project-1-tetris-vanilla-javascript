@@ -8,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const littleCells = []
   const startLocation = 14
   const holdingLocation = 5
+  // const leaderBoard = document.querySelector('#leaderBoardList')
+  // const form = document.querySelector('#leaderboard-form')
 
   // scoring variable1s
   const displayedScore = document.querySelector('#currentScore')
-  
   const lineClearPoints = { 1: 100, 2: 300, 3: 500, 4: 800 }
   let lineClearCounter
   const displayedTotalLines = document.querySelector('#totalLinesCleared')
@@ -20,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentLevel = document.querySelector('#currentLevel')
   currentLevel.innerHTML = 0
   const levelSpeeds = { 0: 600, 1: 550, 2: 500, 3: 450, 4: 400, 5: 350, 6: 300, 7: 250, 8: 200, 9: 150 }
+  // let userName
+  // let newScoreEntry = [parseInt(displayedScore.innerHTML)]
+  // let leaderBoardArray = [['PAUL', 1000], ['MONI', 20000], ['TOOTHLESS', 7500], ['CROOKSHANKS', 7400], ['T.STARK', 300], ['P.PARKER',400], ['THOR', 1000], ['N.ROMANOV', 3000], ['B.BANNER', 100], ['UNIKITTY', 4000]]
 
   // check vairables
   const lastRowStartCell = (width * height) - width  // using formula to get cell numbers for last row in the game board
@@ -62,6 +66,32 @@ document.addEventListener('DOMContentLoaded', () => {
       littleGrid.appendChild(littleCell)
       littleCells.push(littleCell)
     }
+
+    //leaderboards
+    // for (let i = 0; i < 10; i++) {
+    //   const leaderListItem = document.createElement('li')
+    //   leaderListItem.innerHTML = '<span id="span1">span tag</span><span id="span2">tag 2</span>'
+    //   leaderListItem.classList.add('leaderListItem')
+    //   leaderBoard.append(leaderListItem)
+    // }
+
+    // ***************************************************************
+    // testing adding info from arrays to the leaderboard;
+    // leaderBoardArray = leaderBoardArray.sort((function(index) {
+    //   return function(a, b) {
+    //     return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1))
+    //   }
+    // })(1))
+
+    // const items = document.querySelectorAll('li')
+    // // console.log(items)
+    
+    // for (let i = 0; i < leaderBoardArray.length; i++) {
+    //   items[i].innerHTML = `<span id="span1">${leaderBoardArray[i][0]}</span><span id="span2">${leaderBoardArray[i][1]}</span>`
+    // }
+
+
+    // ***************************************************************    
   }
 
   // this function chooses the shape to use each time and reassigns 'currentShape' to be the newly generated one. start location can be altered by updating these
@@ -81,12 +111,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOverScreen() {
     cells.forEach(cell => cell.classList.add('gameOverScreen'))
+    const gameOverDiv = document.querySelector('#gameOver')
+    gameOverDiv.style.display = 'flex'
+    // const scoreBox = document.querySelector('#enterScore')
+    // console.log(topTenCheck(parseInt(displayedScore.innerHTML)))
+
+    // if (topTenCheck(parseInt(displayedScore.innerHTML))) {
+    //   gameOverDiv.style.display = 'flex'
+    //   scoreBox.style.display = 'flex'
+    // } else {
+    //   
+    // }
+    
   }
 
   function resetStuff() {
     displayedTotalLines.innerHTML = 0
     displayedScore.innerHTML = 0
     currentLevel.innerHTML = 0
+    // newScoreEntry = []
   }
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
@@ -181,6 +224,29 @@ document.addEventListener('DOMContentLoaded', () => {
       cellsToClear = []  
     }
   }
+
+  // function leaderBoardAdd() {
+  //   // const leaderBoardForm = document.querySelector('#leaderboard-form')
+  //   // leaderBoardForm.style.display = 'flex'
+  //   newScoreEntry.unshift(userName)
+  //   leaderBoardArray.pop()
+  //   console.log('leaderboard array popped', leaderBoardArray)
+
+  //   leaderBoardArray.push(newScoreEntry)
+  //   leaderBoardArray = leaderBoardArray.sort((function(index) {
+  //     return function(a, b) {
+  //       return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1))
+  //     }
+  //   })(1))
+
+  //   const items = document.querySelectorAll('li')
+  //   // console.log(items)
+    
+  //   for (let i = 0; i < leaderBoardArray.length; i++) {
+  //     items[i].innerHTML = `<span id="span1">${leaderBoardArray[i][0]}</span><span id="span2">${leaderBoardArray[i][1]}</span>`
+  //   }
+
+  // }
   
   // ---------- CHECK FUNCTIONS ---------- //
 
@@ -218,6 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // console.log('is gameOver?', checkArray.some(idx => cells[idx].classList.contains('occupied-block')))
     gameOver = checkArray.some(idx => cells[idx].classList.contains('occupied-block'))
   }
+
+  // function topTenCheck(userScore) {
+  //   return userScore > Math.min(...leaderBoardArray.flat().filter(x => typeof x === 'number')) 
+  // }
 
   function checkCompletedLines() {
     // lineRange makes an array based on start and stop plus increment inputs. it's used to make the gridArrays array
@@ -481,10 +551,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }) // close event listener for keydown
 
-  // ----------- CODE THAT RUNS! ---------- //
+  // form.addEventListener('submit', e => {
+  //   e.preventDefault()
+  //   const userInput = form.querySelector('#user-name')
+  //   userName = userInput.value.toUpperCase()
+  //   console.log(userName)
+  //   leaderBoardAdd()
+  // })
 
+
+
+  // ----------- CODE THAT RUNS! ---------- //
+  
+  resetStuff() 
   makeBoard()
-  resetStuff()
   getRandomShape()
 
 }) // close DOM event listener

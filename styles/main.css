@@ -21,6 +21,23 @@ header {
   justify-items: space-between;
 }
 
+.leaderboard {
+  background-color: azure;
+}
+
+.leaderListItem li {
+  display: flex;
+}
+
+.leaderListItem li span {
+  display: flex;
+  justify-content: space between;
+}
+
+.infoPanel {
+  background-color: azure;
+}
+
 .controls {
   
 }
@@ -35,11 +52,30 @@ header {
   justify-content: center;
   max-height: 480px;
   max-width: 200px;
+  position: relative;
   /* background-color: rgb(187, 183, 183); */
 }
 
 #gameOver {
-  display: hidden;
+  display: none;
+  /* display: flex; */
+  flex-direction: column;
+  position: absolute;
+  width: 80%;
+  height: 30%;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+#enterScore {
+  display: none;
+  /* display: flex; */
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .littleGrid {
@@ -90,9 +126,17 @@ header {
   background-color: rgb(243, 229, 79);
 }
 
-h2, h4, p {
+h2, h3, h4, p {
   text-align: center;
-  margin: 10px 20px;
+  margin: 0
+}
+
+#span1 {
+  color: blue;
+}
+
+#span2 {
+  color: red;
 }
 
 /* .active-shape {
@@ -110,7 +154,7 @@ h2, h4, p {
 
 .gameOverScreen {
   background-color: grey;
-  animation: shake 0.4s;
+  /* animation: shake 0.4s; */
 }
 
 /* took the flash animation from animate.css */

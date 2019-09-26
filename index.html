@@ -16,12 +16,38 @@
   <header></header>
 
   <div class="gameBoardWrapper">
-    <div class="grid"></div>
+    <div class="leaderboard">
+      <h3>HIGH SCORES</h3>
+      <ol id="leaderBoardList"></ol>
+    </div>
+
+    <div class="grid">
+        <div id="gameOver">
+          <h4>GAME OVER :(</h4>
+          <div id="enterScore">
+            <form id="leaderboard-form">
+              <p>You made the leaderboard!</p> 
+              <input type="text" name="userName" maxlength = "10" id="user-name"> 
+              <input type="submit" value="SUBMIT SCORE">
+            </form>
+          </div>
+          <button>PLAY AGAIN</button>
+          <!-- <input type="submit" value="PLAY AGAIN"> -->
+          
+          <!-- <label>Test field: <input type="text"></label>
+          <br><br>
+          <button type="submit">Submit form</button>
+        </form> -->
+
+
+
+        </div>
+    </div>
     <!-- <div class="pressStart">
           <h2>TETRIS</h2>
           <p>press space to play</p>
         </div> -->
-    <!-- <div id="gameOver">GAME OVER :(</div> -->
+    
 
     <div class="infoPanel">
       <div class="littleGrid"></div>
@@ -33,10 +59,8 @@
         <p>Use the arrows to move</p>
         <p>Press w to rotate clockwise</p>
       </div>
-      <div class="leaderboard">
-        leaderboard goes here
-      </div>
-      
+
+
     </div>
 
 
