@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let lineClearCounter
   const displayedTotalLines = document.querySelector('#totalLinesCleared')
   const levelMultipliers = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 10 } // for points
+  const musicSpeeds = { 0: 1, 1: 1.05, 2: 1.1, 3: 1.15, 4: 1.2, 5: 1.25, 6: 1.3, 7: 1.35, 8: 1.4, 9: 1.45 }
+  
 
   const currentLevel = document.querySelector('#currentLevel')
   currentLevel.innerHTML = 0
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.appendChild(cell)
       cells.push(cell)
     }
-    for (let j = 0; j < width * 4; j++) {
+    for (let j = width * 3; j < width * 4; j++) {
       cells[j].classList.add('top-section')
       // cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
     }
@@ -113,7 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function gameOverScreen() {
     cells.forEach(cell => cell.classList.add('gameOverScreen'))
     const gameOverDiv = document.querySelector('#gameOver')
-    gameOverDiv.style.display = 'flex'
+    setTimeout(() => {
+      gameOverDiv.style.display = 'flex'
+    }, 1000)
+    const gameOverSound = document.querySelector('#game-over')
+    gameOverSound.volume = 0.8
+    gameOverSound.play()
+    theme.pause()
+    
+
+
     // const scoreBox = document.querySelector('#enterScore')
     // console.log(topTenCheck(parseInt(displayedScore.innerHTML)))
 
@@ -123,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // } else {
     //   
     // }
-    
+
   }
 
   function resetStuff() {
@@ -190,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(starterCellsArray)
     displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
     
+
     const lineScore = lineClearPoints[lineClearCounter] * levelMultipliers[parseInt(currentLevel.innerHTML)]
     displayedScore.innerHTML = parseInt(displayedScore.innerHTML) + lineScore
 
@@ -215,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       currentLevel.innerHTML = 9
     }
-    
+    theme.playbackRate = musicSpeeds[currentLevel.innerHTML]
     for (let i = 0; i < starterCellsArray.length; i++) {
       clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
       const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
@@ -449,8 +461,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // start and pause
     if (e.keyCode === 32) {
       if (gameOver) {
-        spawnShape()
-        gameOver = false
+        const readyGoSound = document.querySelector('#ready-go-sound')
+        const readyGo = document.querySelector('#ready-go')
+        readyGoSound.volume = 0.6
+        readyGoSound.play()
+        setTimeout(() => {
+          readyGo.style.display = 'none'
+          spawnShape()
+          theme.volume = 0.1
+          theme.paused ? theme.play() : theme.pause()
+          gameOver = false
+        }, 5500)
+        
       }
     }
 
@@ -560,7 +582,17 @@ document.addEventListener('DOMContentLoaded', () => {
   //   leaderBoardAdd()
   // })
 
+  const playAgain = document.querySelector('#play-again')
+  playAgain.addEventListener('click', () => {
+    location.reload()
+  })
 
+  const musicToggle = document.querySelector('.sound')
+  const theme = document.querySelector('#theme')
+  musicToggle.addEventListener('click', () => {
+    theme.volume = 0.15
+    theme.paused ? theme.play() : theme.pause()
+  })
 
   // ----------- CODE THAT RUNS! ---------- //
   

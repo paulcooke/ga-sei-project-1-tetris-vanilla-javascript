@@ -7,6 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Project 1</title>
   <script src="scripts/app.js"></script>
+  <script src="https://kit.fontawesome.com/1ac67ad915.js"></script>
   <link rel="stylesheet" href="styles/normalize.css">
   <link rel="stylesheet" href="styles/animate.css">
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -28,6 +29,12 @@
     </div>
 
     <div class="grid">
+
+        <div id="ready-go">
+          <h1>READY</h1>
+          <h2>PRESS SPACE</h2>
+        </div>
+      
         <div id="gameOver">
           <h4>GAME OVER :(</h4>
           <div id="enterScore">
@@ -37,18 +44,16 @@
               <input type="submit" value="SUBMIT SCORE">
             </form>
           </div>
-          <button>PLAY AGAIN</button>
+          <button id="play-again">PLAY AGAIN?</button>
           <!-- <input type="submit" value="PLAY AGAIN"> -->
           
           <!-- <label>Test field: <input type="text"></label>
           <br><br>
           <button type="submit">Submit form</button>
         </form> -->
-
-
-
         </div>
-    </div>
+
+      </div>
     <!-- <div class="pressStart">
           <h2>TETRIS</h2>
           <p>press space to play</p>
@@ -82,9 +87,14 @@
 
   </div>
 
+  <button class="sound">
+      <audio id="theme" loop="true" src="assets/tetris-gameboy-02.mp3" type="audio/mp3"></audio>
+      TOGGLE MUSIC <i class="fas fa-music"></i>
+  </button>
 
-
-
+  <audio id="game-over" src="assets/32 Game Over.mp3"></audio>
+  <audio id="ready-go-sound" src="assets/03 - coin, ready go.mp3"></audio>
+  
 </body>
 
 </html>
