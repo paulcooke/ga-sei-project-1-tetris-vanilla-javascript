@@ -121,19 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOverSound.volume = 0.8
     gameOverSound.play()
     theme.pause()
-    
-
-
+  
+    // *** scoreboard stuff ***
     // const scoreBox = document.querySelector('#enterScore')
     // console.log(topTenCheck(parseInt(displayedScore.innerHTML)))
 
     // if (topTenCheck(parseInt(displayedScore.innerHTML))) {
     //   gameOverDiv.style.display = 'flex'
     //   scoreBox.style.display = 'flex'
-    // } else {
-    //   
+    // } else {  
     // }
-
   }
 
   function resetStuff() {
