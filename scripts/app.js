@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeShapeLocation = []
   
   // move variables
-  const directionKeys = [37, 38, 39, 40]
+  const directionKeys = [37, 39, 40] //38, up removed
   let direction
   let timer
 
@@ -61,8 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cells.push(cell)
     }
     for (let j = width * 3; j < width * 4; j++) {
-      cells[j].classList.add('top-section')
-      // cells[j].style.borderBottom = '1px solid grey' // **** shouldnt be using this for styling ****
+      cells[j].style.borderBottom = '2px solid rgb(74, 74, 155)'
     }
     for (let k = 0; k < 16; k++) {
       const littleCell = document.createElement('div')
@@ -149,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // make a random shape and put it in the holding ('next shape') area
   function getRandomShape() {
     littleCells.forEach(lilCell => lilCell.classList.remove('tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape'))
-    // littleCells.classList.remove(classToRemove)
     makeShape()
     holdingShape.holdingAddress.forEach(shape => {
       littleCells[shape + holdingLocation].classList.add(holdingShape.name)
@@ -200,7 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearLinesAndTopUp(starterCellsArray) {
     console.log(starterCellsArray)
     displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
-    
+    const clearLinesSound = document.querySelector('#line-clear-sound')
+    clearLinesSound.volume = 0.3
+    clearLinesSound.play()
 
     const lineScore = lineClearPoints[lineClearCounter] * levelMultipliers[parseInt(currentLevel.innerHTML)]
     displayedScore.innerHTML = parseInt(displayedScore.innerHTML) + lineScore
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (gameOver) {
         const readyGoSound = document.querySelector('#ready-go-sound')
         const readyGo = document.querySelector('#ready-go')
-        readyGoSound.volume = 0.6
+        readyGoSound.volume = 0.3
         readyGoSound.play()
         setTimeout(() => {
           readyGo.style.display = 'none'
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
           theme.volume = 0.1
           theme.paused ? theme.play() : theme.pause()
           gameOver = false
-        }, 5500)
+        }, 1000)
         
       }
     }
@@ -561,8 +561,8 @@ document.addEventListener('DOMContentLoaded', () => {
       switch (e.keyCode) {
         case 37: direction = 'left' 
           break
-        case 38: direction = 'up'
-          break
+        // case 38: direction = 'up'
+        //   break
         case 39: direction = 'right'
           break
         case 40: direction = 'down'
