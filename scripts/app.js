@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentLevel = document.querySelector('#currentLevel')
   currentLevel.innerHTML = 0
   const levelSpeeds = { 0: 600, 1: 550, 2: 500, 3: 450, 4: 400, 5: 350, 6: 300, 7: 250, 8: 200, 9: 150 }
+  
+  // leaderboards
   // let userName
   // let newScoreEntry = [parseInt(displayedScore.innerHTML)]
   // let leaderBoardArray = [['PAUL', 1000], ['MONI', 20000], ['TOOTHLESS', 7500], ['CROOKSHANKS', 7400], ['T.STARK', 300], ['P.PARKER',400], ['THOR', 1000], ['N.ROMANOV', 3000], ['B.BANNER', 100], ['UNIKITTY', 4000]]
@@ -69,14 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
       littleCells.push(littleCell)
     }
 
-    //leaderboards
+    // leaderboard sstuff
     // for (let i = 0; i < 10; i++) {
     //   const leaderListItem = document.createElement('li')
     //   leaderListItem.innerHTML = '<span id="span1">span tag</span><span id="span2">tag 2</span>'
     //   leaderListItem.classList.add('leaderListItem')
     //   leaderBoard.append(leaderListItem)
     // }
-
     // ***************************************************************
     // testing adding info from arrays to the leaderboard;
     // leaderBoardArray = leaderBoardArray.sort((function(index) {
@@ -84,15 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
     //     return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1))
     //   }
     // })(1))
-
     // const items = document.querySelectorAll('li')
-    // // console.log(items)
-    
     // for (let i = 0; i < leaderBoardArray.length; i++) {
     //   items[i].innerHTML = `<span id="span1">${leaderBoardArray[i][0]}</span><span id="span2">${leaderBoardArray[i][1]}</span>`
     // }
-
-
     // ***************************************************************    
   }
 
@@ -122,9 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOverSound.play()
     theme.pause()
   
-    // *** scoreboard stuff ***
+    // *** leaderboard stuff ***
+
     // const scoreBox = document.querySelector('#enterScore')
-    // console.log(topTenCheck(parseInt(displayedScore.innerHTML)))
 
     // if (topTenCheck(parseInt(displayedScore.innerHTML))) {
     //   gameOverDiv.style.display = 'flex'
@@ -137,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     displayedTotalLines.innerHTML = 0
     displayedScore.innerHTML = 0
     currentLevel.innerHTML = 0
-    // newScoreEntry = []
+    // newScoreEntry = [] // for leaderboard
   }
 
   // ----------- SPAWNING, DRAWING AND CLEARING FUNCTIONS ---------- //
@@ -155,10 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //this function spawns a new shape at the top of the board, at index contained in global variable 'startLocation'
   function spawnShape () {
     currentShape = holdingShape
-    console.log(holdingShape)
-    // console.log(currentShape)
     if (currentShape.name === 'iShape') iRotationPosition = 1 
-    console.log(iRotationPosition) // iRotationPosition used to id the position that the i is in
     activeShapeLocation = currentShape.shapeStartAddress.map(startShape => {
       cells[startShape + startLocation].classList.add('active-shape')
       cells[startShape + startLocation].classList.add(currentShape.name)
@@ -193,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearLinesAndTopUp(starterCellsArray) {
-    console.log(starterCellsArray)
     displayedTotalLines.innerHTML = parseInt(displayedTotalLines.innerHTML) + lineClearCounter
     const clearLinesSound = document.querySelector('#line-clear-sound')
     clearLinesSound.volume = 0.3
@@ -235,23 +227,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
+  // leave this in for doing leaderboard
   // function leaderBoardAdd() {
   //   // const leaderBoardForm = document.querySelector('#leaderboard-form')
   //   // leaderBoardForm.style.display = 'flex'
   //   newScoreEntry.unshift(userName)
   //   leaderBoardArray.pop()
-  //   console.log('leaderboard array popped', leaderBoardArray)
-
   //   leaderBoardArray.push(newScoreEntry)
   //   leaderBoardArray = leaderBoardArray.sort((function(index) {
   //     return function(a, b) {
   //       return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1))
   //     }
   //   })(1))
-
   //   const items = document.querySelectorAll('li')
-  //   // console.log(items)
-    
   //   for (let i = 0; i < leaderBoardArray.length; i++) {
   //     items[i].innerHTML = `<span id="span1">${leaderBoardArray[i][0]}</span><span id="span2">${leaderBoardArray[i][1]}</span>`
   //   }
@@ -291,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = gameOverRowStartCell; i < gameOverRowStartCell + width; i++) {
       checkArray.push(i)
     }
-    // console.log('is gameOver?', checkArray.some(idx => cells[idx].classList.contains('occupied-block')))
     gameOver = checkArray.some(idx => cells[idx].classList.contains('occupied-block'))
   }
 
@@ -308,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // for each row, check if it's completed and return any that are to the cellsToClear array, these will get to clear rows
     gridArrays.forEach(row => {
-      // row.forEach(idx => console.log('testing for idx', cells[idx].classList))
       if (row.every(idx => cells[idx].classList.contains('occupied-block'))) {
         cellsToClear.push(row)
       }
@@ -323,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // give it one tick
       // if it's really locked, then do the locked stuff, otherwise do the not locked stuff
       // need to check again the above lock checks
-
 
       drawShape(array, 'occupied-block', currentShape.name)
       clearInterval(timer)
@@ -378,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
     // the grid below is what we will use to map the future moves of the current shape to rotate it
     const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
-    console.log('grid', rotateCheckGrid)
     // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
     clearShape(arrayToRotate, 'active-shape', currentShape.name)
     const potentialRotation = []
@@ -433,7 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       tempIRotationPosition = 2
     }
-    console.log('potential location is', potentialRotation)
     return potentialRotation
   }
 
@@ -478,42 +462,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (fiveShapes.includes(currentShape.name)) {  
         //first let' check the move rules, stop it rotating if it breaks them
         const potentialRotation = rotateFiveRightCheck(activeShapeLocation)
-        
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
-          // console.log('oh no! move not possible!')
-          console.log(potentialCenterIdx)
           // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block')  ???? how to wall kick off occupied blocks
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
             clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'right', 1)
-            // console.log('kicked right!')
-            // console.log(cells[currentShape.centerIdx - 1].classList)
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           } else if (activeShapeLocation[currentShape.centerIdx] % width === 9) {
             clearShape(activeShapeLocation, 'active-shape', currentShape.name)
             moveShape(activeShapeLocation, 'left', 1)
-            // console.log('kicked left!')
             rotateFiveRigthDo(activeShapeLocation, potentialRotation)
           }
           lockCheck(activeShapeLocation)
         } else {
           rotateFiveRigthDo(activeShapeLocation, potentialRotation)
-          // currentShape.centerIdx = potentialRotation.indexOf(activeShapeLocation[currentShape.centerIdx])
-          // activeShapeLocation = potentialRotation
-          // lockCheck(activeShapeLocation)
         }
-        // console.log('w was pressed')
-        // console.log('current shape key:', currentShape.centerIdx, 'location:', currentShape.centerIdx)
-        // console.log('current location', activeShapeLocation, 'potential rotation', potentialRotation)
       }
 
       if (currentShape.name === 'iShape') {
         const potentialRotation = rotateIRightCheck(activeShapeLocation)
         
         if (!leftCheck(potentialRotation, 0, 1) && !rightCheck(potentialRotation, 0, -1)) {
-          // console.log('oh no! move not possible!')
-          console.log(potentialCenterIdx)
-          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') 
+          // || cells[currentShape.centerIdx - 1].classList.contains('occupied-block') ??? for wall kicking off occupied blocks?
           if (activeShapeLocation[currentShape.centerIdx] % width === 0) {
             if (iRotationPosition === 4) {
               clearShape(activeShapeLocation, 'active-shape', currentShape.name)
@@ -544,7 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
             rotateIRigthDo(activeShapeLocation, potentialRotation)
           }
           lockCheck(activeShapeLocation)
-          console.log('centerid address', activeShapeLocation[currentShape.centerIdx])
         } else {
           rotateIRigthDo(activeShapeLocation, potentialRotation)
         }
@@ -558,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
       switch (e.keyCode) {
         case 37: direction = 'left' 
           break
-        // case 38: direction = 'up'
+        // case 38: direction = 'up' // leave in for testing
         //   break
         case 39: direction = 'right'
           break
@@ -567,16 +536,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       clearShape(activeShapeLocation, 'active-shape', currentShape.name)
       moveShape(activeShapeLocation, direction, 1)
-      console.log('new shape location', activeShapeLocation)   
     }
   }) // close event listener for keydown
 
+  // leave this here for future leaderboard
   // form.addEventListener('submit', e => {
-  //   e.preventDefault()
-  //   const userInput = form.querySelector('#user-name')
-  //   userName = userInput.value.toUpperCase()
-  //   console.log(userName)
-  //   leaderBoardAdd()
+  // e.preventDefault()
+  // const userInput = form.querySelector('#user-name')
+  // userName = userInput.value.toUpperCase()
+  // leaderBoardAdd()
   // })
 
   const playAgain = document.querySelector('#play-again')
