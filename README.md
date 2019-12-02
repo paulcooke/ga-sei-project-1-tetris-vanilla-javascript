@@ -157,13 +157,13 @@ In order to clear completed lines, the game:
 
 ```javascript
 for (let i = 0; i < starterCellsArray.length; i++) {
-      clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
-      const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
-      tempArray.forEach(idx => {
-        cells[idx].classList = cells[idx - width].classList
-      })  
-      cellsToClear = []  
-    }
+  clearShape(starterCellsArray[i], 'occupied-block', 'tShape', 'iShape', 'oShape', 'jShape', 'lShape', 'sShape', 'zShape')
+  const tempArray = rangeMaker(40, starterCellsArray[i][starterCellsArray[i].length - 1], 1).reverse()
+  tempArray.forEach(idx => {
+    cells[idx].classList = cells[idx - width].classList
+  })  
+  cellsToClear = []  
+}
 ```
 
 ### Wins
