@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
   }  
   
-  // return the *POSSIBLEe* final position after rotating right 90 degrees
+  // return the *POSSIBLE* final position after rotating right 90 degrees
   function rotateFiveRightCheck(arrayToRotate) {
     // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
     const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
