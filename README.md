@@ -89,18 +89,18 @@ the oShape doesnt rotate, which is handy. The iShape is awkward and needs specia
 ```javascript
 // return the *POSSIBLE* final position after rotating right 90 degrees
 function rotateFiveRightCheck(arrayToRotate) {
-// rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
-const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
-// the grid below is what we will use to map the future moves of the current shape to rotate it
-const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
-// now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
-clearShape(arrayToRotate, 'active-shape', currentShape.name)
-const potentialRotation = []
-rotateCheckGrid.forEach(idx => {
-  if (arrayToRotate.includes(idx)) {
-    potentialRotation.push(idx + rotateRightInstructions[rotateCheckGrid.indexOf(idx)])
-  }
-})
+  // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
+  const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
+  // the grid below is what we will use to map the future moves of the current shape to rotate it
+  const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
+  // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
+  clearShape(arrayToRotate, 'active-shape', currentShape.name)
+  const potentialRotation = []
+  rotateCheckGrid.forEach(idx => {
+    if (arrayToRotate.includes(idx)) {
+      potentialRotation.push(idx + rotateRightInstructions[rotateCheckGrid.indexOf(idx)])
+    }
+  })
 potentialCenterIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
 return potentialRotation
 }
