@@ -87,23 +87,23 @@ the oShape doesnt rotate, which is handy. The iShape is awkward and needs specia
 	And is applied as follows:
 	
 ```javascript
-	// return the *POSSIBLE* final position after rotating right 90 degrees
-  	function rotateFiveRightCheck(arrayToRotate) {
-    // rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
-    const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
-    // the grid below is what we will use to map the future moves of the current shape to rotate it
-    const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
-    // now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
-    clearShape(arrayToRotate, 'active-shape', currentShape.name)
-    const potentialRotation = []
-    rotateCheckGrid.forEach(idx => {
-      if (arrayToRotate.includes(idx)) {
-        potentialRotation.push(idx + rotateRightInstructions[rotateCheckGrid.indexOf(idx)])
-      }
-    })
-    potentialCenterIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
-    return potentialRotation
-  }
+// return the *POSSIBLE* final position after rotating right 90 degrees
+function rotateFiveRightCheck(arrayToRotate) {
+	// rotate instructions give instructions to any of the 5 shapes (excl o and i) on how to spin to the right
+	const rotateRightInstructions = [2, width + 1, 2 * width, -width + 1, 0, width - 1, -2 * width, -width - 1, -2]  
+	// the grid below is what we will use to map the future moves of the current shape to rotate it
+	const rotateCheckGrid = checkArrayGridMaker.map(instruction => arrayToRotate[currentShape.centerIdx] - width - 1 + instruction)
+	// now we check the rotateCheckGrid against the currentShapeLocation and if it includes it we return the index with the instructions applied to it
+	clearShape(arrayToRotate, 'active-shape', currentShape.name)
+	const potentialRotation = []
+	rotateCheckGrid.forEach(idx => {
+	  if (arrayToRotate.includes(idx)) {
+	    potentialRotation.push(idx + rotateRightInstructions[rotateCheckGrid.indexOf(idx)])
+	  }
+	})
+potentialCenterIdx = potentialRotation.indexOf(arrayToRotate[currentShape.centerIdx])
+return potentialRotation
+}
 ```
 
 
@@ -151,7 +151,9 @@ In order to clear completed lines, the game:
     lineClearCounter = cellsToClear.length
   }
 ```
+
 * The next function then does a little bit of game logic - plays the line clear sound, updates scores, adjusts game and music speed if it needs to, before going through the 2d array in a nested loop and essentially making each cell get the class from the cell above itself, bringing the whole board down to fill the space created by the cleared line/s. Doing this as a nested loop means you can clear two lines together that are not directly above each ther (1st and 3rd from bottom for example) and it will still work correctly:
+
 
 	```javascript
 for (let i = 0; i < starterCellsArray.length; i++) {
