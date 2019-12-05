@@ -109,7 +109,7 @@ return potentialRotation
 
 
 * The rotation undertakes similar checks to the directional movement and will only spin the shape if it is able to
-* Key to this approach working is reassigning the center index for the shape once rotation is complete. The center index is at the middle cell of the 3x3 in the image above. To illustrate, the tShape starts with a center index of 2 (third value in the shape array is at the 0 location in the 3x3), but rotate it 90 degrees and the center index is now 1 (second value is now at the middle cell). As we update it, the next time we draw the little 3x3 the center index will still be correct and rotation will work properly, if we hadn't reassigned the center index it would offset the 3x3 one cell to the right and the shape would slowly fall apart
+* Key to this approach working is reassigning the center index for the shape once rotation is complete. The center index is at the middle cell of the 3x3 in the image above. To illustrate, the tShape starts with a center index of 2 (third value in the shape array is at the middle location in the 3x3), but rotate it 90 degrees and the center index is now 1 (second value is now at the middle cell). As we update it, the next time we draw the little 3x3 the center index will still be correct and rotation will work properly, if we hadn't reassigned the center index it would offset the 3x3 one cell to the right and the shape would slowly fall apart
 
 	![](readme_assets/t_rotation.png)
 	
