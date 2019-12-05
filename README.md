@@ -53,7 +53,7 @@ The tetronimos are all objects, each containing:
 * a name
 * a holding address (the array of the tetronimo when it's in the 'next shape' area)
 * a start address (the array for the shape when it's put on the board, for example, in the image above the iShape has a start address of `[9, 10, 11, 12]`, it is put on the board by being added to the cell start reference 14, meaning it appears as the array `[23, 24, 25, 26]`)
-* a starting 'center index', a reference that defines the index in the tetronimo array around which the shape will spin. In the rotation logic, this index is actively updated as for some of the shapes the centre index changes as it rotates.
+* a starting 'center index', a reference that defines the index in the tetronimo array around which the shape will spin. In the rotation logic, this index is actively updated as for some of the shapes the center index changes as it rotates.
 
 The tetronimo objects look like this:
 `{ name: 'tShape', shapeStartAddress: [0, 9, 10, 11], centerIdx: 2, holdingAddress: [0, 3, 4, 5] }`
