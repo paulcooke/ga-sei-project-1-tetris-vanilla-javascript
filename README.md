@@ -53,7 +53,7 @@ The tetronimos are all objects, each containing:
 * a name
 * a holding address (the array of the tetronimo when it's in the 'next shape' area)
 * a start address (the array for the shape when it's put on the board, for example, in the image above the iShape has a start address of `[9, 10, 11, 12]`, it is put on the board by being added to the cell start reference 14, meaning it appears as the array `[23, 24, 25, 26]`)
-* a starting 'center index', a reference that defines the index in the tetronimo array around which the shape will spin. In the rotation logic, this index is actively updated as some of the shapes the centre index changes as it rotates.
+* a starting 'center index', a reference that defines the index in the tetronimo array around which the shape will spin. In the rotation logic, this index is actively updated as for some of the shapes the centre index changes as it rotates.
 
 The tetronimo objects look like this:
 `{ name: 'tShape', shapeStartAddress: [0, 9, 10, 11], centerIdx: 2, holdingAddress: [0, 3, 4, 5] }`
@@ -73,6 +73,7 @@ To move a tetronimo, the steps are:
 * Redraw the shape at the projected location by adding the 'active shape' class
 * Update the active shape location to the new location after the move
 * When a shape moves it also checks to see if any cell from the shape is in the last row of the grid or is above an existing occupied block. If so, the shape will settle and become an get the class 'occupied block' itself and the next shape will enter the board, becoming the new 'current active shape'
+* Once a shape has settled as an 'occupied block', there is also a check to see if any part of it is in the bottom row of the spawn area, which would trigger game over if true
 
 #### Rotation
 One of the more challenging aspects of this particular game. There are various ways to approach this, I decided to try and get as close as I could to the SRS system, including 'wall kicks'.
@@ -107,14 +108,14 @@ return potentialRotation
 ```
 
 
-* The rotation undertakes similar checks to the directional movement and will only spin the shape if it's able to
-* Key to this approach working is reassigning the center index for the shape once rotation is complete. The center index is the 0 in the middle of the 3x3 in the image above. To illustrate, the tShape starts with a center index of 2 (third value in the shape array is at the 0 location in the 3x3), but rotate it 90 degrees and the center index is now 1 (second value is now at the 0 location). Now the next time we draw the little 3x3 the center index will still be correct and rotation will work properly, if we hadn't reassigned the center index it would offset the 3x3 one cell to the right.
+* The rotation undertakes similar checks to the directional movement and will only spin the shape if it is able to
+* Key to this approach working is reassigning the center index for the shape once rotation is complete. The center index is at the middle cell of the 3x3 in the image above. To illustrate, the tShape starts with a center index of 2 (third value in the shape array is at the 0 location in the 3x3), but rotate it 90 degrees and the center index is now 1 (second value is now at the middle cell). As we update it, the next time we draw the little 3x3 the center index will still be correct and rotation will work properly, if we hadn't reassigned the center index it would offset the 3x3 one cell to the right and the shape would slowly fall apart
 
 	![](readme_assets/t_rotation.png)
 	
 *Wall kicks*
 
-Wall kicks are when the user wants to rotate a shape that is pressed against the boundary wall of the grid. The shape should jump away from the wall and then complete it's rotation. This is done by:
+Wall kicks are when the user wants to rotate a shape that has it's center index pressed against the boundary wall of the grid. The shape should jump away from the wall and then complete it's rotation. This is done by:
 
 * In the check that rotation is possible, if rotation would cause a cell to go outside the grid to the right, move the shape left before trying again. Vice-versa for the left wall
 * The wall kick then also checks to see that it's possible to rotate after wall kicking, if it's not (there is an occupied block in the way) then it won't allow the wall kick to happen
@@ -125,7 +126,7 @@ Wall kicks are when the user wants to rotate a shape that is pressed against the
 
 The iShape is tricky because it rotates in a 4x4 grid not a 3x3 grid, thus it recieved the following special treatment:
 
-* It cannot use a center index for rotation (no single cell center in a 4x4), so is the only shape that uses 'current roation position' to keep track of it's current state
+* It cannot use a center index for rotation (no single cell center in a 4x4), so is the only shape that uses 'current rotation position' to keep track of it's current state
 * Wall kicks and rotation require checking for two cells to the side
 
 #### Line clears
@@ -152,7 +153,7 @@ In order to clear completed lines, the game:
   }
 ```
 
-* The next function then does a little bit of game logic - plays the line clear sound, updates scores, adjusts game and music speed if it needs to, before going through the 2d array in a nested loop and essentially making each cell get the class from the cell above itself, bringing the whole board down to fill the space created by the cleared line/s. Doing this as a nested loop means you can clear two lines together that are not directly above each ther (1st and 3rd from bottom for example) and it will still work correctly:
+* The next function then does a little bit of game logic - plays the line clear sound, updates scores, adjusts game and music speed if it needs to, before going through the 2d array in a nested loop and essentially making each cell copy the class from the cell above itself, bringing the whole board down to fill the space created by the cleared line/s. Doing this as a nested loop means you can clear two lines together that are not directly above each other (1st and 3rd from bottom for example) and it will still work correctly:
 
 
 ```javascript
