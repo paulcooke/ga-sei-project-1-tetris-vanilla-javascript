@@ -25,10 +25,10 @@ I chose to make a Tetris clone, as it's the one I enjoyed playing the most from 
 
 #### How the game works
 * Scoring is based on lines cleared (there's a multiplier for clearing more than one at a time, as well as for clearing lines on higher levels). Levels increase based on lines cleared, the higher the level, the faster the tetronimos and the music
-* The game is started on a key press (space bar), the controls, music and pause buttons are handled by a keyup event listener. The first shape is waiting in the ready area when the game loaads, when the game starts, this will move to the top of the board and start to drop, and a new randomly selected shape will spawn in the ready area
+* The game is started on a key press (space bar), the controls, music and pause buttons are handled by a keyup event listener. The first shape is waiting in the ready area when the game loads, when the game starts, this will move to the top of the board and start to drop, and a new randomly selected shape will spawn in the ready area
 * The shapes are moved down by a setInterval, which is started when the shape moves into the game board and cleared when it settles. A shape settles if it has the bottom of the grid or another settled shape below it
-* If a shape settles and lines are completed, the lines are cleared and the remaining settled blcoks moved down before the next shape begins moving down
-* The game is over if any part of a shape settles whilst out the top of the board
+* If a shape settles and lines are completed, the lines are cleared and the remaining settled blocks moved down before the next shape begins moving down
+* The game is over if any part of a shape settles whilst above the top of the board
 
 ![](readme_assets/game_over.gif)
 
@@ -40,7 +40,7 @@ I chose to make a Tetris clone, as it's the one I enjoyed playing the most from 
 
 #### Grid, tetronimos and directional movement
 
-A tetris board is 10 x 20, with 4 additional rows above for tetronimo (the 7 shapes) spawning. I started by creating a grid on the page using a flex-wrap to manage the grid. This meant the tetronimos could move by deleting and adding classes to the grid cells to the left and right (-1, +1) and up or down (-10, +10). In the final game the tetronimos cannot move upwards, but it was useful during testing. 
+A tetris board is 10 x 20, with 4 additional rows above for tetronimo (the 7 shapes) spawning. I started by creating a grid on the page using a flex-wrap. This meant the tetronimos could move by deleting and adding classes to the grid cells to the left and right (-1, +1) and up or down (-10, +10). In the final game the tetronimos cannot move upwards, but it was useful to have this enabled during testing. 
 
 This layout also helped with out-of-bounds rules.
 
@@ -72,13 +72,13 @@ To move a tetronimo, the steps are:
 * If all the above are true, delete the 'active shape' class from the current shape location
 * Redraw the shape at the projected location by adding the 'active shape' class
 * Update the active shape location to the new location after the move
-* When a shape moves it also checks to see if any cell from the shape is in the last row of the grid or is above an existing occupied block. If so, the shape will settle and become an get the class 'occupied block' itself and the next shape will enter the board, becoming the new 'current active shape'
+* When a shape moves it also checks to see if any cell from the shape is in the last row of the grid or is above an existing occupied block. If so, the shape will settle and become an 'occupied block' itself and the next shape will enter the board, becoming the new 'current active shape'
 * Once a shape has settled as an 'occupied block', there is also a check to see if any part of it is in the bottom row of the spawn area, which would trigger game over if true
 
 #### Rotation
 One of the more challenging aspects of this particular game. There are various ways to approach this, I decided to try and get as close as I could to the SRS system, including 'wall kicks'.
 
-the oShape doesnt rotate, which is handy. The iShape is awkward and needs special treatment, but for the other 5 shapes I used a miniature 3x3 grid to do the rotation:
+The oShape doesnt rotate, which is handy. The iShape is awkward and needs special treatment, but for the other 5 shapes I used a miniature 3x3 grid to do the rotation:
 
 * This 3x3 is drawn by using the center index as a reference to create a 'check array'
 * A rotation map is applied to the shape in the check array to spin it 90 degrees clockwise, the instructions in the rotation map look like this:
@@ -115,7 +115,7 @@ return potentialRotation
 	
 *Wall kicks*
 
-Wall kicks are when the user wants to rotate a shape that has it's center index pressed against the boundary wall of the grid. The shape should jump away from the wall and then complete it's rotation. This is done by:
+Wall kicks are when the user wants to rotate a shape that has it's center index pressed against the boundary wall of the grid. The shape should jump away from the wall and then complete it's rotation. How this is done:
 
 * In the check that rotation is possible, if rotation would cause a cell to go outside the grid to the right, move the shape left before trying again. Vice-versa for the left wall
 * The wall kick then also checks to see that it's possible to rotate after wall kicking, if it's not (there is an occupied block in the way) then it won't allow the wall kick to happen
