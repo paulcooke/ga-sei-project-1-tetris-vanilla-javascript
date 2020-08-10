@@ -13,11 +13,11 @@
 * CSS3
 
 ### Deployment
-The app is deployed on github page and can be found here: [https://paulcooke.github.io/tetris-vanilla-javascript/]()
+The app is deployed on github pages and can be found here: [https://paulcooke.github.io/tetris-vanilla-javascript/]()
 
 ### Overview
 
-The first project on the course is a solo one. We were given the choice of 10 different drid-based games to make in vanilla JavaScript, using DOM manipulation to achieve control & movement, flexboxes to make the grid, HTML5 audio for sound and vanilla CSS for styling. 
+The first project on the course is a solo one. We were given the choice of 10 different grid-based games to make in vanilla JavaScript, using DOM manipulation to achieve control & movement, flexboxes to make the grid, HTML5 audio for sound and vanilla CSS for styling. 
 
 I chose to make a Tetris clone, as it's the one I enjoyed playing the most from the list of choices and it looked challenging to make.
 
