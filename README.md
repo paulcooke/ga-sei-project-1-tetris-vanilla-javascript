@@ -25,7 +25,7 @@ I chose to make a Tetris clone, as it's the one I enjoyed playing the most from 
 
 #### How the game works
 * Scoring is based on lines cleared (there's a multiplier for clearing more than one at a time, as well as for clearing lines on higher levels). Levels increase based on lines cleared, the higher the level, the faster the tetronimos and the music
-* The game is started on a key press (space bar), the controls music pause buttons are handled by a keyup event listener. The first shape is waiting in the ready area when the game loaads, when the game starts, this will move to the top of the board and start to drop, and a new randomly selected shape will spawn in the ready area
+* The game is started on a key press (space bar), the controls, music and pause buttons are handled by a keyup event listener. The first shape is waiting in the ready area when the game loaads, when the game starts, this will move to the top of the board and start to drop, and a new randomly selected shape will spawn in the ready area
 * The shapes are moved down by a setInterval, which is started when the shape moves into the game board and cleared when it settles. A shape settles if it has the bottom of the grid or another settled shape below it
 * If a shape settles and lines are completed, the lines are cleared and the remaining settled blcoks moved down before the next shape begins moving down
 * The game is over if any part of a shape settles whilst out the top of the board
