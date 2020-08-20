@@ -13,7 +13,7 @@
 * CSS3
 
 ### Deployment
-The app is deployed on github pages and can be found here: [https://paulcooke.github.io/tetris-vanilla-javascript/]()
+The app is deployed on github pages and can be found here: [https://paulcooke.github.io/ga-sei-project-1-tetris-vanilla-javascript/]()
 
 ### Overview
 
